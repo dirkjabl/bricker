@@ -26,6 +26,22 @@ implement a Go API for it.
 
 Come later, sorry...
 
+## Makefile
+
+The Makefile is only for an easy using, you do not need it.
+
+	make clean     # -> makes in every subdirectory "go clean"
+
+	make build     # -> make in every subdirectory "go build"
+
+    make test      # -> makes in every subdirectory "go test"
+
+    make deeptest  # -> makes in every subdirectory "go test -v"
+
+	make install   # -> makes in every subdirectory "go install"
+
+For comfort a *make all" is also implemented. It calls "build", "test" and "install".
+
 # Version
 
 prealpha -> alpha -> beta -> 0.0.1
