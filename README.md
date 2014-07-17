@@ -22,7 +22,11 @@ You can get support for many programming languages, but not a API for Go (07/17/
 I want to program my controlling software for my hardware projects in Go, so i start to
 implement a Go API for it.
 
-# Examples
+## Supported Hardware
+
+For the actual supportet bricks and bricklets please refer the HARDWARE.md file.
+
+## Examples
 
 Come later, sorry...
 
