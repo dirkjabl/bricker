@@ -7,9 +7,9 @@
 package buffered
 
 import (
-	"bricker/event"
-	"bricker/net"
-	"bricker/net/packet"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/net"
+	"github.com/dirkjabl/bricker/net/packet"
 )
 
 // ConnectorBuffered is the connector with to bufferd channels,

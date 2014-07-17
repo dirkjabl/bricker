@@ -8,7 +8,7 @@ TCP/IP Networking connection.
 package net
 
 import (
-	"bricker/net/packet"
+	"github.com/dirkjabl/bricker/net/packet"
 	"net"
 )
 

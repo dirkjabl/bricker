@@ -5,10 +5,9 @@
 package virtual
 
 import (
-	"bricker/event"
-	"bricker/net/packet"
 	"errors"
-	// "fmt"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/net/packet"
 	"testing"
 	"time"
 )

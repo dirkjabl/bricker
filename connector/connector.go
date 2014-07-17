@@ -13,7 +13,7 @@ The Connector is a producer of events. To use this events their will be need con
 package connector
 
 import (
-	"bricker/event"
+	"github.com/dirkjabl/bricker/event"
 )
 
 // Interface to the connector. It should send and receive events to or from the hardware.

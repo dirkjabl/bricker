@@ -5,8 +5,8 @@
 package device
 
 import (
-	"bricker/net/packet"
-	"bricker/subscription"
+	"github.com/dirkjabl/bricker/net/packet"
+	"github.com/dirkjabl/bricker/subscription"
 	"testing"
 )
 

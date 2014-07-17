@@ -5,8 +5,8 @@
 package device
 
 import (
-	"bricker/net/errors"
-	"bricker/net/packet"
+	"github.com/dirkjabl/bricker/net/errors"
+	"github.com/dirkjabl/bricker/net/packet"
 )
 
 // Type for a event result.

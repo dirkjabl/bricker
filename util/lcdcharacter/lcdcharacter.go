@@ -27,7 +27,7 @@ Example to generate a "H" custom character:
 package lcdcharacter
 
 import (
-	"bricker/device/bricklet/lcd20x4"
+	"github.com/dirkjabl/bricker/device/bricklet/lcd20x4"
 	"unicode/utf8"
 )
 

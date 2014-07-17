@@ -5,8 +5,8 @@
 package bricker
 
 import (
-	"bricker/event"
-	"bricker/subscription"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/subscription"
 )
 
 // Interface for all Subscriber.

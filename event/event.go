@@ -16,8 +16,8 @@ Before you use anything from the event, check if it exists.
 package event
 
 import (
-	"bricker/net/packet"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/packet"
 	"time"
 )
 

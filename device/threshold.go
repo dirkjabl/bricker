@@ -5,8 +5,8 @@
 package device
 
 import (
-	"bricker/net/packet"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/packet"
 )
 
 // Threshold states.

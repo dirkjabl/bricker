@@ -6,13 +6,13 @@
 package enumerate
 
 import (
-	"bricker/device"
-	"bricker/device/identity"
-	"bricker/device/name"
-	"bricker/net/base58"
-	"bricker/net/packet"
-	"bricker/subscription"
 	"fmt"
+	"github.com/dirkjabl/bricker/device"
+	"github.com/dirkjabl/bricker/device/identity"
+	"github.com/dirkjabl/bricker/device/name"
+	"github.com/dirkjabl/bricker/net/base58"
+	"github.com/dirkjabl/bricker/net/packet"
+	"github.com/dirkjabl/bricker/subscription"
 )
 
 // Constants for the type of connection of a specific device.

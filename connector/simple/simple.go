@@ -6,8 +6,8 @@
 package simple
 
 import (
-	"bricker/event"
-	"bricker/net"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/net"
 	"sync"
 )
 

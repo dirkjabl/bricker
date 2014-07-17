@@ -23,9 +23,9 @@ This API based on the documentation of the TCP/IP API from http://www.tinkerforg
 package bricker
 
 import (
-	"bricker/connector"
-	"bricker/event"
-	"bricker/util/hash"
+	"github.com/dirkjabl/bricker/connector"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // The bricker type.

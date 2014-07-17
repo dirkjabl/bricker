@@ -5,12 +5,12 @@
 package lcd20x4
 
 import (
-	"bricker"
-	"bricker/device"
-	"bricker/net/packet"
-	"bricker/subscription"
-	"bricker/util/hash"
 	"fmt"
+	"github.com/dirkjabl/bricker"
+	"github.com/dirkjabl/bricker/device"
+	"github.com/dirkjabl/bricker/net/packet"
+	"github.com/dirkjabl/bricker/subscription"
+	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetDefaultText creates a new subscriber to set the default text line (for one line 0-3).

@@ -5,7 +5,7 @@
 package bricker
 
 import (
-	"bricker/connector"
+	"github.com/dirkjabl/bricker/connector"
 )
 
 // AttachConnector adds a named connector to the bricker.

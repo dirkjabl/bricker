@@ -10,11 +10,11 @@ Creates, copy, modify, read, write and print packets for networking.
 package packet
 
 import (
-	"bricker/net/errors"
-	"bricker/net/head"
-	"bricker/net/optionaldata"
-	"bricker/net/payload"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/errors"
+	"github.com/dirkjabl/bricker/net/head"
+	"github.com/dirkjabl/bricker/net/optionaldata"
+	"github.com/dirkjabl/bricker/net/payload"
 	"io"
 )
 

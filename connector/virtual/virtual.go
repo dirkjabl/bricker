@@ -7,9 +7,9 @@
 package virtual
 
 import (
-	"bricker/event"
-	"bricker/util/generator"
-	"bricker/util/hash"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/util/generator"
+	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // This is the generator type and it is a function.

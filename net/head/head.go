@@ -6,9 +6,9 @@
 package head
 
 import (
-	"bricker/net/errors"
 	"encoding/binary"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/errors"
 	"io"
 )
 

@@ -5,8 +5,8 @@
 package device
 
 import (
-	"bricker/net/packet"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/packet"
 )
 
 // Type for the debounce period (ms) with which the threshold callback is triggered,

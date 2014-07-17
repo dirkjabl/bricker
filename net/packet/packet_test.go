@@ -5,10 +5,9 @@
 package packet
 
 import (
-	// "fmt"
-	"bricker/net/head"
-	"bricker/net/optionaldata"
-	"bricker/net/payload"
+	"github.com/dirkjabl/bricker/net/head"
+	"github.com/dirkjabl/bricker/net/optionaldata"
+	"github.com/dirkjabl/bricker/net/payload"
 	"testing"
 )
 

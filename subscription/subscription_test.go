@@ -5,7 +5,7 @@
 package subscription
 
 import (
-	"bricker/util/hash"
+	"github.com/dirkjabl/bricker/util/hash"
 	"strings"
 	"testing"
 )

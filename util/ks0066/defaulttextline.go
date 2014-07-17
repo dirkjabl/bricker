@@ -5,7 +5,7 @@
 package ks0066
 
 import (
-	"bricker/device/bricklet/lcd20x4"
+	"github.com/dirkjabl/bricker/device/bricklet/lcd20x4"
 	"unicode/utf8"
 )
 

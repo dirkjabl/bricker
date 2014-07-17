@@ -5,8 +5,8 @@
 package event
 
 import (
-	"bricker/net/packet"
 	"errors"
+	"github.com/dirkjabl/bricker/net/packet"
 	"strings"
 	"testing"
 	"time"

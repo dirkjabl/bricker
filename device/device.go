@@ -7,10 +7,10 @@ every of them should fullfill the subscriber interface. */
 package device
 
 import (
-	"bricker/event"
-	"bricker/subscription"
-	"bricker/util/generator"
 	"fmt"
+	"github.com/dirkjabl/bricker/event"
+	"github.com/dirkjabl/bricker/subscription"
+	"github.com/dirkjabl/bricker/util/generator"
 )
 
 // internal generator for ids

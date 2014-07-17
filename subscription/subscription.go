@@ -11,9 +11,9 @@ Also it has the information, on which events (notifyable events) the subscriber 
 package subscription
 
 import (
-	"bricker/net/packet"
-	"bricker/util/hash"
 	"fmt"
+	"github.com/dirkjabl/bricker/net/packet"
+	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // Identify the events a subscriber handle.
