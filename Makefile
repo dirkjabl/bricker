@@ -33,6 +33,7 @@ DIRS=\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
 	device/bricklet/lcd20x4\
+	device/bricklet/piezobuzzer\
 	device/bricklet/piezospeaker\
 	device/bricklet/temperature
 
