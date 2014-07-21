@@ -6,6 +6,7 @@ Analog In Bricklet     |  ×        |  ×           |
 Analog Out Bricklet    |  ×        |  ×           |
 IO-4 Bricklet          |  ×        |  ×           |
 LCD 20x4 Bricklet      |  ×        |  ×           |
+Piezo Buzzer Bricklet  |  ×        |  ×           |
 Piezo Speaker Bricklet |  ×        |  ×           |
 Temperature Bricklet   |  ×        |  ×           |
 
