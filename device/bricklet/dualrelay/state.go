@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetState creates a subscriber to set the dual relays.
@@ -146,8 +147,8 @@ func (s *State) FromStateRaw(sr *StateRaw) {
 	if s == nil || sr == nil {
 		return
 	}
-	s.Relay1 = (sr.Relay1 & 0x01) == 0x01
-	s.Relay2 = (sr.Relay2 & 0x01) == 0x01
+	s.Relay1 = misc.Uint8ToBool(sr.Relay1)
+	s.Relay2 = misc.Uint8ToBool(sr.Relay2)
 }
 
 // StateRaw is a de/encoding type for State.
@@ -162,25 +163,9 @@ func NewStateRaw(s *State) *StateRaw {
 		return nil
 	}
 	sr := new(StateRaw)
-	sr.FromState(s)
+	sr.Relay1 = misc.BoolToUint8(s.Relay1)
+	sr.Relay2 = misc.BoolToUint8(s.Relay2)
 	return sr
-}
-
-// FromState converts a State into a StateRaw.
-func (sr *StateRaw) FromState(s *State) {
-	if sr == nil || s == nil {
-		return
-	}
-	if s.Relay1 {
-		sr.Relay1 = 0x01
-	} else {
-		sr.Relay1 = 0x00
-	}
-	if s.Relay2 {
-		sr.Relay2 = 0x01
-	} else {
-		sr.Relay2 = 0x00
-	}
 }
 
 // SelectedState is a type to address one specific relay (1 or 2).

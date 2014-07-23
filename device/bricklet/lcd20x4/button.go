@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // IsButtonPressed creates a subscriber to get the information, if a specific button is pressed.
@@ -115,7 +116,7 @@ func (pr *Pressed) FromPacket(p *packet.Packet) error {
 	if err := device.CheckForFromPacket(pr, p); err != nil {
 		return err
 	}
-	prr := NewPressedRawFromPressed(pr)
+	prr := new(PressedRaw)
 	err := p.Payload.Decode(prr)
 	if err == nil {
 		pr.FromPressedRaw(prr)
@@ -125,13 +126,13 @@ func (pr *Pressed) FromPacket(p *packet.Packet) error {
 
 // String fullfill the stringer interface.
 func (pr *Pressed) String() string {
-	txt := "Pressed ["
+	txt := "Pressed "
 	if pr != nil {
-		txt += fmt.Sprintf("IsPressed: %t", pr.IsPressed)
+		txt += fmt.Sprintf("[IsPressed: %t]", pr.IsPressed)
 	} else {
-		txt += "nil"
+		txt += "[nil]"
 	}
-	return txt + "]"
+	return txt
 }
 
 // FromPressedRaw converts a PressedRaw type to a Pressed type.
@@ -139,7 +140,7 @@ func (pr *Pressed) FromPressedRaw(prr *PressedRaw) {
 	if pr == nil || prr == nil {
 		return
 	}
-	pr.IsPressed = (prr.IsPressed & 0x01) == 0x01
+	pr.IsPressed = misc.Uint8ToBool(prr.IsPressed)
 }
 
 // PressedRaw is a type for raw coding of the pressed state.
@@ -150,18 +151,6 @@ type PressedRaw struct {
 // NewPressedRawFromPressed is a simple constructor for a PressedRaw from a Pressed type.
 func NewPressedRawFromPressed(pr *Pressed) *PressedRaw {
 	prr := new(PressedRaw)
-	prr.FromPressed(pr)
+	prr.IsPressed = misc.BoolToUint8(pr.IsPressed)
 	return prr
-}
-
-// FromPressed simple converter from Pressed type to PressedRaw.
-func (prr *PressedRaw) FromPressed(pr *Pressed) {
-	if pr == nil {
-		return
-	}
-	if pr.IsPressed {
-		prr.IsPressed = 0x01
-	} else {
-		prr.IsPressed = 0x00
-	}
 }

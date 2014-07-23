@@ -11,12 +11,13 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func SetConfig(id string, uid uint32, cursor *Cursor, handler func(device.Resulter, error)) *device.Device {
 	fid := function_set_config
 	sc := device.New(device.FallbackId(id, "SetConfig"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewCursorRawFromCursor(cursor))
+	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewCursorRaw(cursor))
 	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
 	sc.SetSubscription(sub)
 	sc.SetResult(&device.EmptyResult{})
@@ -82,7 +83,7 @@ func (c *Cursor) FromPacket(p *packet.Packet) error {
 	if err := device.CheckForFromPacket(c, p); err != nil {
 		return err
 	}
-	rc := NewCursorRawFromCursor(c)
+	rc := new(CursorRaw)
 	err := p.Payload.Decode(rc)
 	if err == nil && rc != nil {
 		c.FromCursorRaw(rc)
@@ -92,13 +93,13 @@ func (c *Cursor) FromPacket(p *packet.Packet) error {
 
 // String fullfill the stringer interface.
 func (c *Cursor) String() string {
-	txt := "Cursor ["
+	txt := "Cursor "
 	if c != nil {
-		txt += fmt.Sprintf("Show: %t, Blinking: %t", c.Show, c.Blinking)
+		txt += fmt.Sprintf("[Show: %t, Blinking: %t]", c.Show, c.Blinking)
 	} else {
-		txt += "nil"
+		txt += "[nil]"
 	}
-	return txt + "]"
+	return txt
 }
 
 // FromCursorRaw converts a CursorRaw type into a Cursor type.
@@ -106,8 +107,8 @@ func (c *Cursor) FromCursorRaw(cr *CursorRaw) {
 	if c == nil || cr == nil {
 		return
 	}
-	c.Show = (cr.Show & 0x01) == 0x01
-	c.Blinking = (cr.Blinking & 0x01) == 0x01
+	c.Show = misc.Uint8ToBool(cr.Show)
+	c.Blinking = misc.Uint8ToBool(cr.Blinking)
 }
 
 // CursorRaw is the real de/encoding type for a cursor.
@@ -117,28 +118,12 @@ type CursorRaw struct {
 }
 
 // NewFromCursor creates a CursorRaw object from a Cursor.
-func NewCursorRawFromCursor(c *Cursor) *CursorRaw {
+func NewCursorRaw(c *Cursor) *CursorRaw {
 	if c == nil {
 		return nil
 	}
 	cr := new(CursorRaw)
-	cr.FromCursor(c)
+	cr.Show = misc.BoolToUint8(c.Show)
+	cr.Blinking = misc.BoolToUint8(c.Blinking)
 	return cr
-}
-
-// FromCursor converts a Cursor type to a CursorRaw type.
-func (cr *CursorRaw) FromCursor(c *Cursor) {
-	if cr == nil || c == nil {
-		return
-	}
-	if c.Show {
-		cr.Show = 0x01
-	} else {
-		cr.Show = 0x00
-	}
-	if c.Blinking {
-		cr.Blinking = 0x01
-	} else {
-		cr.Blinking = 0x00
-	}
 }
