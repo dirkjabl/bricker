@@ -32,7 +32,7 @@ func SetDebouncePeriodFuture(brick *bricker.Bricker, connectorname string, uid u
 	defer close(future)
 	sub := SetDebouncePeriod("setdebounceperiodfuture"+device.GenId(), uid, d,
 		func(r device.Resulter, err error) {
-			future <- device.IsEmptyResultOk(d, err)
+			future <- device.IsEmptyResultOk(r, err)
 		})
 	err := brick.Subscribe(sub, connectorname)
 	if err != nil {
