@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func BacklightOn(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
@@ -115,7 +116,7 @@ func (bl *Backlight) FromPacket(p *packet.Packet) error {
 	if err := device.CheckForFromPacket(bl, p); err != nil {
 		return err
 	}
-	blr := NewBacklightRawFromBacklight(bl)
+	blr := new(BacklightRaw)
 	err := p.Payload.Decode(blr)
 	if err == nil {
 		bl.FromBacklightRaw(blr)
@@ -125,40 +126,24 @@ func (bl *Backlight) FromPacket(p *packet.Packet) error {
 
 // String fullfill the stringer interface.
 func (bl *Backlight) String() string {
-	txt := "Backlight ["
+	txt := "Backlight "
 	if bl != nil {
-		txt += fmt.Sprintf("IsOn: %t", bl.IsOn)
+		txt += fmt.Sprintf("[IsOn: %t]", bl.IsOn)
 	} else {
-		txt += "nil"
+		txt += "[nil]"
 	}
-	return txt + "]"
+	return txt
 }
 
+// FromBacklightRaw converts a BacklightRaw into a Backlight.
 func (bl *Backlight) FromBacklightRaw(br *BacklightRaw) {
 	if bl == nil || br == nil {
 		return
 	}
-	bl.IsOn = (br.IsOn & 0x01) == 0x01
+	bl.IsOn = misc.Uint8ToBool(br.IsOn)
 }
 
 // BacklightRaw is a type for raw coding of the backlight.
 type BacklightRaw struct {
 	IsOn uint8
-}
-
-func NewBacklightRawFromBacklight(b *Backlight) *BacklightRaw {
-	br := new(BacklightRaw)
-	br.FromBacklight(b)
-	return br
-}
-
-func (br *BacklightRaw) FromBacklight(b *Backlight) {
-	if b == nil {
-		return
-	}
-	if b.IsOn {
-		br.IsOn = 0x01
-	} else {
-		br.IsOn = 0x00
-	}
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetConfiguration create the subscriber to set the value and the direction of the specified pin.
@@ -99,22 +100,10 @@ func NewConfigurationRaw(c *Configuration) *ConfigurationRaw {
 		return nil
 	}
 	cr := new(ConfigurationRaw)
-	cr.FromConfiguration(c)
-	return cr
-}
-
-// FromConfiguration converts a Configuration into a ConfigurationRaw.
-func (cr *ConfigurationRaw) FromConfiguration(c *Configuration) {
-	if c == nil || cr == nil {
-		return
-	}
 	cr.SelectionMask = c.SelectionMask
 	cr.Direction = c.Direction
-	if c.Value {
-		cr.Value = 0x01
-	} else {
-		cr.Value = 0x00
-	}
+	cr.Value = misc.BoolToUint8(c.Value)
+	return cr
 }
 
 // Configurations is the return type for the state of the pins.

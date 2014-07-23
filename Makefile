@@ -26,6 +26,7 @@ DIRS=\
 	util/generator\
 	util/ks0066\
 	util/lcdcharacter\
+	util/miscellaneous\
 	device\
 	device/identity\
 	device/name\

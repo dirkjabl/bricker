@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetMonoflop creates the subscriber to set the monoflop timer value for specifed output relay.
@@ -114,11 +115,7 @@ func NewMonoflopsRaw(m *Monoflops) *MonoflopsRaw {
 	mr := new(MonoflopsRaw)
 	mr.Relay = m.Relay
 	mr.Time = m.Time
-	if m.State {
-		mr.State = 0x01
-	} else {
-		mr.State = 0x00
-	}
+	mr.State = misc.BoolToUint8(m.State)
 	return mr
 }
 
@@ -156,7 +153,7 @@ func (m *Monoflop) FromMonoflopRaw(mr *MonoflopRaw) {
 	}
 	m.Time = mr.Time
 	m.TimeRemaining = mr.TimeRemaining
-	m.State = (mr.State & 0x01) == 0x01
+	m.State = misc.Uint8ToBool(mr.State)
 }
 
 // Relay type to define a specific relay.
@@ -196,7 +193,7 @@ func (v *Value) FromValueRaw(vr *ValueRaw) {
 		return
 	}
 	v.Relay = vr.Relay
-	v.State = (vr.State & 0x01) == 0x01
+	v.State = misc.Uint8ToBool(vr.State)
 }
 
 // String fullfill the stringer interface.

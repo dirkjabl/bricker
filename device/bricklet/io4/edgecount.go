@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func GetEdgeCount(id string, uid uint32, ec *EdgeCount, handler func(device.Resulter, error)) *device.Device {
@@ -129,21 +130,9 @@ func NewEdgeCountRaw(ec *EdgeCount) *EdgeCountRaw {
 		return nil
 	}
 	ecr := new(EdgeCountRaw)
-	ecr.FromEdgeCount(ec)
-	return ecr
-}
-
-// FromEdgeCount converts a EdgeCount into a EdgeCountRaw object.
-func (ecr *EdgeCountRaw) FromEdgeCount(ec *EdgeCount) {
-	if ec == nil || ecr == nil {
-		return
-	}
 	ecr.Pin = ec.Pin
-	if ec.ResetCounter {
-		ecr.ResetCounter = 0x01
-	} else {
-		ecr.ResetCounter = 0x00
-	}
+	ecr.ResetCounter = misc.BoolToUint8(ec.ResetCounter)
+	return ecr
 }
 
 // The value of the EdgeCount
