@@ -35,6 +35,7 @@ DIRS=\
 	device/bricklet/analogout\
 	device/bricklet/dualbutton\
 	device/bricklet/dualrelay\
+	device/bricklet/io16\
 	device/bricklet/io4\
 	device/bricklet/lcd20x4\
 	device/bricklet/piezobuzzer\
