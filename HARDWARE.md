@@ -4,6 +4,7 @@ Hardware               | Supported | All Features | All Tests
 :--------------------- | :-------: | :----------: | :-------:
 Analog In Bricklet     |  ×        |  ×           |  
 Analog Out Bricklet    |  ×        |  ×           |
+Dual Button Bricklet   |  ×        |  ×           |
 Dual Relay Bricklet    |  ×        |  ×           |
 IO-4 Bricklet          |  ×        |  ×           |
 LCD 20x4 Bricklet      |  ×        |  ×           |
