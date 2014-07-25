@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetInterrupt creates the subscriber to set the interrupt bitmask.
@@ -110,7 +111,7 @@ func (i *Interrupt) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Mask: %d (%s)]",
-			i.Mask, MaskToString(i.Mask))
+			i.Mask, misc.MaskToString(i.Mask, 4, true))
 	}
 	return txt
 }
@@ -136,8 +137,8 @@ func (i *Interrupts) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Interrupt Mask: %d (%s), Value Mask: %d (%s)]",
-			i.InterruptMask, MaskToString(i.InterruptMask),
-			i.ValueMask, MaskToString(i.ValueMask))
+			i.InterruptMask, misc.MaskToString(i.InterruptMask, 4, true),
+			i.ValueMask, misc.MaskToString(i.ValueMask, 4, true))
 	}
 	return txt
 }

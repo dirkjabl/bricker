@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetValue create the subscriber to set the output value with a bitmask (high or low).
@@ -129,7 +130,7 @@ func (v *Value) String() string {
 	if v == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("[Mask: %d (%s)]", v.Mask, MaskToString(v.Mask))
+		txt += fmt.Sprintf("[Mask: %d (%s)]", v.Mask, misc.MaskToString(v.Mask, 4, true))
 	}
 	return txt
 }

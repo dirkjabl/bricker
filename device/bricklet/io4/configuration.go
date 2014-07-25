@@ -127,8 +127,8 @@ func (c *Configurations) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Direction Mask: %d (%s), Value Mask: %d (%s)]",
-			c.DirectionMaske, MaskToString(c.DirectionMaske),
-			c.ValueMask, MaskToString(c.ValueMask))
+			c.DirectionMaske, misc.MaskToString(c.DirectionMaske, 4, true),
+			c.ValueMask, misc.MaskToString(c.ValueMask, 4, true))
 	}
 	return txt
 }
