@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 const (
@@ -69,34 +70,8 @@ func (v *Values) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Selection Mask: %d (%s), Value Mask: %d (%s)]",
-			v.SelectionMask, MaskToString(v.SelectionMask),
-			v.ValueMask, MaskToString(v.ValueMask))
+			v.SelectionMask, misc.MaskToString(v.SelectionMask, 4, true),
+			v.ValueMask, misc.MaskToString(v.ValueMask, 4, true))
 	}
 	return txt
-}
-
-// MaskToString converts for better printing a mask (uin8 - 4bit) to a string.
-func MaskToString(mask uint8) string {
-	m := "0000"
-	if (mask & Bit_3) == Bit_3 {
-		m += "1"
-	} else {
-		m += "0"
-	}
-	if (mask & Bit_2) == Bit_2 {
-		m += "1"
-	} else {
-		m += "0"
-	}
-	if (mask & Bit_1) == Bit_1 {
-		m += "1"
-	} else {
-		m += "0"
-	}
-	if (mask & Bit_0) == Bit_0 {
-		m += "1"
-	} else {
-		m += "0"
-	}
-	return m
 }

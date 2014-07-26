@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package io4
+package io16
 
 import (
 	"fmt"
@@ -14,24 +14,24 @@ import (
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
-// SetInterrupt creates the subscriber to set the interrupt bitmask.
-func SetInterrupt(id string, uid uint32, i *Interrupt, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_interrupt
-	si := device.New(device.FallbackId(id, "SetInterrupt"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, i)
+// SetPortInterrupt creates the subscriber to set the interrupt bitmask for a port.
+func SetPortInterrupt(id string, uid uint32, pi *PortInterrupt, handler func(device.Resulter, error)) *device.Device {
+	fid := function_set_port_interrupt
+	spi := device.New(device.FallbackId(id, "SetPortInterrupt"))
+	p := packet.NewSimpleHeaderPayload(uid, fid, true, pi)
 	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	si.SetSubscription(sub)
-	si.SetResult(&device.EmptyResult{})
-	si.SetHandler(handler)
-	return si
+	spi.SetSubscription(sub)
+	spi.SetResult(&device.EmptyResult{})
+	spi.SetHandler(handler)
+	return spi
 }
 
-// SetInterruptFuture is a future pattern version for a synchronized call of the subscriber.
+// SetPortInterruptFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32, i *Interrupt) bool {
+func SetPortInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32, pi *PortInterrupt) bool {
 	future := make(chan bool)
 	defer close(future)
-	sub := SetInterrupt("setinterruptfuture"+device.GenId(), uid, i,
+	sub := SetPortInterrupt("setportinterruptfuture"+device.GenId(), uid, pi,
 		func(r device.Resulter, err error) {
 			future <- device.IsEmptyResultOk(r, err)
 		})
@@ -42,24 +42,24 @@ func SetInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32
 	return <-future
 }
 
-// GetInterrupt creates the subscriber to get the interrupt bitmask.
-func GetInterrupt(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_interrupt
-	gi := device.New(device.FallbackId(id, "GetInterrupt"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
+// GetPortInterrupt creates the subscriber to get the interrupt bitmask for a port.
+func GetPortInterrupt(id string, uid uint32, po *Port, handler func(device.Resulter, error)) *device.Device {
+	fid := function_get_port_interrupt
+	gpi := device.New(device.FallbackId(id, "GetPortInterrupt"))
+	p := packet.NewSimpleHeaderPayload(uid, fid, true, po)
 	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gi.SetSubscription(sub)
-	gi.SetResult(&Interrupt{})
-	gi.SetHandler(handler)
-	return gi
+	gpi.SetSubscription(sub)
+	gpi.SetResult(&Interrupt{})
+	gpi.SetHandler(handler)
+	return gpi
 }
 
-// GetInterruptFuture is a future pattern version for a synchronized all of the subscriber.
+// GetPortInterruptFuture is a future pattern version for a synchronized all of the subscriber.
 // If an error occur, the result is nil.
-func GetInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32) *Interrupt {
+func GetPortInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32, po *Port) *Interrupt {
 	future := make(chan *Interrupt)
 	defer close(future)
-	sub := GetInterrupt("getinterruptfuture"+device.GenId(), uid,
+	sub := GetPortInterrupt("getinterruptfuture"+device.GenId(), uid, po,
 		func(r device.Resulter, err error) {
 			var v *Interrupt = nil
 			if err == nil {
@@ -89,11 +89,19 @@ func InterruptTrigger(id string, uid uint32, handler func(device.Resulter, error
 	return it
 }
 
-// Interrupt bitmask type.
-// Interrupts are triggered on changes of the voltage level of the pin,
-// i.e. changes from high to low and low to high.
+// PortInterrupt is a combined type.
+type PortInterrupt struct {
+	Port          byte
+	InterruptMask uint8
+}
+
+/*
+ Interrupt bitmask type.
+ Interrupts are triggered on changes of the voltage level of the pin,
+ i.e. changes from high to low and low to high.
+*/
 type Interrupt struct {
-	Mask uint8 // bitmask 4bit
+	Mask uint8 // bitmask 8bit
 }
 
 // FromPacket creates a Interrupt from a packet.
@@ -111,15 +119,16 @@ func (i *Interrupt) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Mask: %d (%s)]",
-			i.Mask, misc.MaskToString(i.Mask, 4, true))
+			i.Mask, misc.MaskToString(i.Mask, 8, false))
 	}
 	return txt
 }
 
 // Interrupts is the result type of the interrupt callback.
 type Interrupts struct {
-	InterruptMask uint8 // bitmap 4bit
-	ValueMask     uint8 // bitmap 4nit
+	Port          byte  // port a or b
+	InterruptMask uint8 // bitmap 8bit
+	ValueMask     uint8 // bitmap 8bit
 }
 
 // FromPacket creates a Interrupts object from a packet.
@@ -136,9 +145,10 @@ func (i *Interrupts) String() string {
 	if i == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("[Interrupt Mask: %d (%s), Value Mask: %d (%s)]",
-			i.InterruptMask, misc.MaskToString(i.InterruptMask, 4, true),
-			i.ValueMask, misc.MaskToString(i.ValueMask, 4, true))
+		txt += fmt.Sprintf("[Port: %s, Interrupt Mask: %d (%s), Value Mask: %d (%s)]",
+			i.Port,
+			i.InterruptMask, misc.MaskToString(i.InterruptMask, 8, false),
+			i.ValueMask, misc.MaskToString(i.ValueMask, 8, false))
 	}
 	return txt
 }
