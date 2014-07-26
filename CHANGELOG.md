@@ -1,5 +1,11 @@
 # Changelog
 
+### prealpha.3
+
+More bricklets supported (IO-16, Dual Button).
+Fallback subscriber support for not depatchable events added.
+Some fixes.
+
 ## prealpha
 This version inserts the code. All features should be added here.
 The hardware and the brick daemon API also get new features (or new hardware),
