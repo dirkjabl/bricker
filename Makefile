@@ -26,12 +26,16 @@ DIRS=\
 	util/generator\
 	util/ks0066\
 	util/lcdcharacter\
+	util/miscellaneous\
 	device\
 	device/identity\
 	device/name\
 	device/enumerate\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
+	device/bricklet/dualbutton\
+	device/bricklet/dualrelay\
+	device/bricklet/io16\
 	device/bricklet/io4\
 	device/bricklet/lcd20x4\
 	device/bricklet/piezobuzzer\

@@ -57,6 +57,20 @@ func (b *Bricker) Unsubscribe(s Subscriber) error {
 	return nil
 }
 
+// SubscribeDefaultFallback register a (only one) default fallback subscriber.
+// If already a default fallback subscriber is set, this subscriber would be relased.
+func (b *Bricker) SubscribeDefaultFallback(s Subscriber) {
+	if b.defaultsubscriber != nil {
+		b.UnsubscribeDefaultFallback()
+	}
+	b.defaultsubscriber = s
+}
+
+// UnsubscribeDefaultFallback relase a registered default fallback subscriber.
+func (b *Bricker) UnsubscribeDefaultFallback() {
+	b.defaultsubscriber = nil
+}
+
 // Internal method: insertChooser add a new chooser to the slice of chooser
 func (b *Bricker) insertChooser(n uint8) {
 	for _, v := range b.choosers {

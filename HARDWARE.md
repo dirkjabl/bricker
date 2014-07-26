@@ -1,9 +1,12 @@
 # Supported bricks and bricklets
 
 Hardware               | Supported | All Features | All Tests
-:--------------------- | :-------- | :----------- | :--------
+:--------------------- | :-------: | :----------: | :-------:
 Analog In Bricklet     |  ×        |  ×           |  
 Analog Out Bricklet    |  ×        |  ×           |
+Dual Button Bricklet   |  ×        |  ×           |
+Dual Relay Bricklet    |  ×        |  ×           |
+IO-16 Bricklet         |  ×        |  ×           |
 IO-4 Bricklet          |  ×        |  ×           |
 LCD 20x4 Bricklet      |  ×        |  ×           |
 Piezo Buzzer Bricklet  |  ×        |  ×           |
@@ -14,5 +17,7 @@ Temperature Bricklet   |  ×        |  ×           |
 ## Legend
 
 **Supported**: The hardware support is started and some features are implemented.
+
 **All Features**: All feature of a hardware is implemented.
+
 **All Tests**: All unit tests are run ok and additional test are running.

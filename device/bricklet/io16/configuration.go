@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package io4
+package io16
 
 import (
 	"fmt"
@@ -14,26 +14,27 @@ import (
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
-// SetConfiguration create the subscriber to set the value and the direction of the specified pin.
+// SetPortConfiguration create the subscriber to set the value and the direction of the specified pin.
 // Direction could be 'i' (input) or 'o' (output).
+// Port coult be 'a' or 'b'.
 // If the direction is configured as input, the value is either pull-up or default (set as true or false).
-func SetConfiguration(id string, uid uint32, c *Configuration, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_configuration
-	sc := device.New(device.FallbackId(id, "SetConfiguration"))
+func SetPortConfiguration(id string, uid uint32, c *Configuration, handler func(device.Resulter, error)) *device.Device {
+	fid := function_set_port_configuration
+	spc := device.New(device.FallbackId(id, "SetPortConfiguration"))
 	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewConfigurationRaw(c))
 	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sc.SetSubscription(sub)
-	sc.SetResult(&device.EmptyResult{})
-	sc.SetHandler(handler)
-	return sc
+	spc.SetSubscription(sub)
+	spc.SetResult(&device.EmptyResult{})
+	spc.SetHandler(handler)
+	return spc
 }
 
-// SetConfigurationFuture is a future pattern version for a synchronized call of the subscriber.
+// SetPortConfigurationFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetConfigurationFuture(brick *bricker.Bricker, connectorname string, uid uint32, c *Configuration) bool {
+func SetPortConfigurationFuture(brick *bricker.Bricker, connectorname string, uid uint32, c *Configuration) bool {
 	future := make(chan bool)
 	defer close(future)
-	sub := SetConfiguration("setconfigurationfuture"+device.GenId(), uid, c,
+	sub := SetPortConfiguration("setportconfigurationfuture"+device.GenId(), uid, c,
 		func(r device.Resulter, err error) {
 			future <- device.IsEmptyResultOk(r, err)
 		})
@@ -44,26 +45,26 @@ func SetConfigurationFuture(brick *bricker.Bricker, connectorname string, uid ui
 	return <-future
 }
 
-// GetConfiguration creates the subscriber to get the configuration of all pins.
+// GetPortConfiguration creates the subscriber to get the configuration of all pins.
 // Returns a value bitmask and a direction bitmask.
 // A 1 in the direction bitmask means input and a 0 in the bitmask means output.
-func GetConfiguration(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_configuration
-	gc := device.New(device.FallbackId(id, "GetConfiguration"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
+func GetPortConfiguration(id string, uid uint32, po *Port, handler func(device.Resulter, error)) *device.Device {
+	fid := function_get_port_configuration
+	gpc := device.New(device.FallbackId(id, "GetPortConfiguration"))
+	p := packet.NewSimpleHeaderPayload(uid, fid, true, po)
 	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gc.SetSubscription(sub)
-	gc.SetResult(&Configurations{})
-	gc.SetHandler(handler)
-	return gc
+	gpc.SetSubscription(sub)
+	gpc.SetResult(&Configurations{})
+	gpc.SetHandler(handler)
+	return gpc
 }
 
-// GetConfigurationFuture is a future pattern version for a synchronized all of the subscriber.
+// GetPortConfigurationFuture is a future pattern version for a synchronized all of the subscriber.
 // If an error occur, the result is nil.
-func GetConfigurationFuture(brick *bricker.Bricker, connectorname string, uid uint32) *Configurations {
+func GetPortConfigurationFuture(brick *bricker.Bricker, connectorname string, uid uint32, po *Port) *Configurations {
 	future := make(chan *Configurations)
 	defer close(future)
-	sub := GetConfiguration("getconfigurationfuture"+device.GenId(), uid,
+	sub := GetPortConfiguration("getportconfigurationfuture"+device.GenId(), uid, po,
 		func(r device.Resulter, err error) {
 			var v *Configurations = nil
 			if err == nil {
@@ -82,14 +83,16 @@ func GetConfigurationFuture(brick *bricker.Bricker, connectorname string, uid ui
 
 // Configuration is a type to set the direction and the value of the specified pin(s).
 type Configuration struct {
-	SelectionMask uint8 // bitmask (4bit)
+	Port          byte  // 'a' - port a, 'b' - port b
+	SelectionMask uint8 // bitmask (8bit)
 	Direction     byte  // 'i' - input, 'o' - output
 	Value         bool  // true - hight, pull-up; false - low, default
 }
 
 // ConfigurationRaw is the raw type of the Configuration (for de/encoding).
 type ConfigurationRaw struct {
-	SelectionMask uint8 // bitmask (4bit)
+	Port          byte  // 'a' - port a, 'b' - port b
+	SelectionMask uint8 // bitmask (8bit)
 	Direction     byte  // 'i' - input, 'o' - output
 	Value         uint8 // 0x01 true or 0x00 false
 }
@@ -100,6 +103,7 @@ func NewConfigurationRaw(c *Configuration) *ConfigurationRaw {
 		return nil
 	}
 	cr := new(ConfigurationRaw)
+	cr.Port = c.Port
 	cr.SelectionMask = c.SelectionMask
 	cr.Direction = c.Direction
 	cr.Value = misc.BoolToUint8(c.Value)
@@ -122,13 +126,13 @@ func (c *Configurations) FromPacket(p *packet.Packet) error {
 
 // String fullfill the stringer interface.
 func (c *Configurations) String() string {
-	txt := "Configurations "
+	txt := "Port Configurations "
 	if c == nil {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Direction Mask: %d (%s), Value Mask: %d (%s)]",
-			c.DirectionMaske, misc.MaskToString(c.DirectionMaske, 4, true),
-			c.ValueMask, misc.MaskToString(c.ValueMask, 4, true))
+			c.DirectionMaske, misc.MaskToString(c.DirectionMaske, 8, false),
+			c.ValueMask, misc.MaskToString(c.ValueMask, 8, false))
 	}
 	return txt
 }

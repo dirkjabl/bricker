@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package io4
+package io16
 
 import (
 	"fmt"
@@ -14,6 +14,9 @@ import (
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
+// GetEdgeCount creates a subscriber to get the actual value of the edge counter.
+// Supports only edge counts on port a.
+// With ResetCounter set to true, the edge counter is reseted directly after call.
 func GetEdgeCount(id string, uid uint32, ec *EdgeCount, handler func(device.Resulter, error)) *device.Device {
 	fid := function_get_edge_count
 	gec := device.New(device.FallbackId(id, "GetEdgeCount"))
@@ -51,7 +54,7 @@ func GetEdgeCountFuture(brick *bricker.Bricker, connectorname string, uid uint32
 // The debounce time is given in ms (default 100ms).
 // Configuring an edge counter resets its value to 0..
 // Default edge type is 0 (rising).
-func SetEdgeCountConfig(id string, uid uint32, e *SelectedEdgeCountConfig, handler func(device.Resulter, error)) *device.Device {
+func SetEdgeCountConfig(id string, uid uint32, e *EdgeCountConfigs, handler func(device.Resulter, error)) *device.Device {
 	fid := function_set_edge_count_config
 	secc := device.New(device.FallbackId(id, "SetEdgeCountConfig"))
 	p := packet.NewSimpleHeaderPayload(uid, fid, true, e)
@@ -64,7 +67,7 @@ func SetEdgeCountConfig(id string, uid uint32, e *SelectedEdgeCountConfig, handl
 
 // SetEdgeCountConfigFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetEdgeCountConfigFuture(brick *bricker.Bricker, connectorname string, uid uint32, e *SelectedEdgeCountConfig) bool {
+func SetEdgeCountConfigFuture(brick *bricker.Bricker, connectorname string, uid uint32, e *EdgeCountConfigs) bool {
 	future := make(chan bool)
 	defer close(future)
 	sub := SetEdgeCountConfig("setedgecountconfigfuture"+device.GenId(), uid, e,
@@ -199,8 +202,8 @@ func EdgeTypeName(t uint8) string {
 	}
 }
 
-// SelectedEdgeCountConfig type for select a edge count configuration.
-type SelectedEdgeCountConfig struct {
-	SelectionMask uint8
+// EdgeCountConfigs type for set a edge count configuration.
+type EdgeCountConfigs struct {
+	Pin uint8
 	EdgeCountConfig
 }

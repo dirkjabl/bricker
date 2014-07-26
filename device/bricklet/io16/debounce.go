@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package temperature
+package io16
 
 import (
 	"github.com/dirkjabl/bricker"
@@ -41,7 +41,7 @@ func SetDebouncePeriodFuture(brick *bricker.Bricker, connectorname string, uid u
 	return <-future
 }
 
-// GetDebouncePeriod creates the subscriber to set the debounce period.
+// GetDebouncePeriod creates the subscriber to get the debounce period.
 func GetDebouncePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	fid := function_get_debounce_period
 	gdp := device.New(device.FallbackId(id, "GetDebouncePeriod"))

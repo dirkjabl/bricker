@@ -11,6 +11,7 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 	"github.com/dirkjabl/bricker/subscription"
 	"github.com/dirkjabl/bricker/util/hash"
+	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 /*
@@ -76,7 +77,7 @@ func (c *Calibration) FromPacket(p *packet.Packet) error {
 	if err := device.CheckForFromPacket(c, p); err != nil {
 		return err
 	}
-	rc := &CalibrationRaw{}
+	rc := new(CalibrationRaw)
 	err := p.Payload.Decode(rc)
 	if err == nil && rc != nil {
 		c.FromCalibrationRaw(rc)
@@ -89,7 +90,7 @@ func (c *Calibration) FromCalibrationRaw(rc *CalibrationRaw) {
 	if rc == nil || c == nil {
 		return
 	}
-	c.Done = (rc.Done & 0x01) == 0x01
+	c.Done = misc.Uint8ToBool(rc.Done)
 }
 
 // String fullfill the stringer interface.

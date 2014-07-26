@@ -17,11 +17,11 @@ import (
 
 // Constants for the type of connection of a specific device.
 const (
-	function_enumerate       = uint8(254)
-	callback_enumerate       = uint8(253)
-	EnumerationTypeAvailable = iota
-	EnumerationTypeNewlyConnected
-	EnumerationTypeDisconneted
+	function_enumerate            = uint8(254)
+	callback_enumerate            = uint8(253)
+	EnumerationTypeAvailable      = uint8(0)
+	EnumerationTypeNewlyConnected = uint8(1)
+	EnumerationTypeDisconneted    = uint8(2)
 )
 
 // Enumerate creates the subscriber for the enumeration callback.
@@ -69,17 +69,21 @@ func (e *Enumeration) EnumerationTypeString() string {
 
 // Stringer interface fulfill.
 func (e *Enumeration) String() string {
-	uid := base58.Convert32(base58.Decode(e.Uid))
-	cuid := base58.Convert32(base58.Decode(e.ConnectedUid))
-	txt := "Enumeration ["
-	txt += fmt.Sprintf("UID: %s (%d), ", e.Uid, uid)
-	txt += fmt.Sprintf("Connected UID: %s (%d), ", e.ConnectedUid, cuid)
-	txt += fmt.Sprintf("Position: %c, ", e.Position)
-	txt += fmt.Sprintf("Hardware Version: %d.%d.%d, ", e.HardwareVersion[0],
-		e.HardwareVersion[1], e.HardwareVersion[2])
-	txt += fmt.Sprintf("Firmware Version: %d.%d.%d, ", e.FirmwareVersion[0],
-		e.FirmwareVersion[1], e.FirmwareVersion[2])
-	txt += "Name: " + name.Name(e.DeviceIdentifer) + ", "
-	txt += e.EnumerationTypeString() + "]"
+	txt := "Enumeration "
+	if e == nil {
+		txt += "[nil]"
+	} else {
+		uid := base58.Convert32(base58.Decode(e.Uid))
+		cuid := base58.Convert32(base58.Decode(e.ConnectedUid))
+		txt += fmt.Sprintf("[UID: %s (%d), ", e.Uid, uid)
+		txt += fmt.Sprintf("Connected UID: %s (%d), ", e.ConnectedUid, cuid)
+		txt += fmt.Sprintf("Position: %c, ", e.Position)
+		txt += fmt.Sprintf("Hardware Version: %d.%d.%d, ", e.HardwareVersion[0],
+			e.HardwareVersion[1], e.HardwareVersion[2])
+		txt += fmt.Sprintf("Firmware Version: %d.%d.%d, ", e.FirmwareVersion[0],
+			e.FirmwareVersion[1], e.FirmwareVersion[2])
+		txt += "Name: " + name.Name(e.DeviceIdentifer) + ", "
+		txt += fmt.Sprintf("State: %s (%d)]", e.EnumerationTypeString(), e.EnumerationType)
+	}
 	return txt
 }
