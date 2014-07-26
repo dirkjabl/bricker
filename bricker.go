@@ -31,11 +31,12 @@ import (
 // The bricker type.
 // A bricker managed connectors and subscriber.
 type Bricker struct {
-	connection map[string]connector.Connector
-	first      string
-	uids       map[uint32]string
-	subscriber map[hash.Hash]map[string]Subscriber
-	choosers   []uint8
+	connection        map[string]connector.Connector
+	first             string
+	uids              map[uint32]string
+	subscriber        map[hash.Hash]map[string]Subscriber
+	choosers          []uint8
+	defaultsubscriber Subscriber
 }
 
 // New create the bricker.
@@ -73,10 +74,7 @@ func (b *Bricker) read(c connector.Connector, n string) {
 			return // done, no more packets
 		}
 		ev.ConnectorName = n
-		if ev.Packet != nil {
-			go b.dispatch(ev)
-		}
-		// TODO: what to do with a event without a packet? It is not dispatchable.
+		go b.dispatch(ev)
 	}
 }
 
@@ -87,7 +85,7 @@ func (b *Bricker) write(e *event.Event) {
 			conn.Send(e)
 		} else {
 			e.Err = NewError(ErrorConnectorNameNotExists)
-			b.dispatch(e) // TODO: check this again
+			go b.dispatch(e)
 		}
 	}
 }
@@ -95,22 +93,30 @@ func (b *Bricker) write(e *event.Event) {
 // Internal method: process dispatch the event to the right subscriber.
 func (b *Bricker) dispatch(e *event.Event) {
 	var h hash.Hash
-	for _, chooser := range b.choosers {
-		h = hash.New(chooser, e.Packet.Head.Uid, e.Packet.Head.FunctionID)
-		if s, ok := b.subscriber[h]; ok {
-			go b.process(e, s)
+	if e.Packet == nil { // without a packet, no subscriber could be determined
+		go b.process(e, b.defaultsubscriber)
+	} else {
+		for _, chooser := range b.choosers {
+			h = hash.New(chooser, e.Packet.Head.Uid, e.Packet.Head.FunctionID)
+			if s, ok := b.subscriber[h]; ok {
+				go func(ev *event.Event, subs map[string]Subscriber) {
+					for _, s := range subs {
+						go b.process(e, s)
+					}
+				}(e, s)
+			}
 		}
 	}
 }
 
-// Internal method: process notifies all given subscriber in the map.
-func (b *Bricker) process(e *event.Event, subs map[string]Subscriber) {
-	for _, s := range subs {
-		go func(sub Subscriber) {
-			sub.Notify(e)
-			if !sub.Subscription().Callback {
-				b.Unsubscribe(sub)
-			}
-		}(s)
+// Internal method: process notify given subscriber.
+func (b *Bricker) process(e *event.Event, sub Subscriber) {
+	if sub == nil {
+		return // no subscriber, no notify
+	} else {
+		sub.Notify(e)
+		if !sub.Subscription().Callback { // not a callback, call only once
+			b.Unsubscribe(sub)
+		}
 	}
 }
