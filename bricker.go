@@ -12,9 +12,10 @@ The connectors could send and receive events to a specific address.
 The packets will encapsulate in events.
 The bricker is also a producer of events.
 To use this events their will be need consumer (subscriber).
+There is a fallback mechanism for events without a consumer (default fallback subscriber).
 
 For using this API you need a running brick daemon (brickd) or some hardware with a brick daemon,
-please use an actual version.
+please use an actual version of the daemon.
 You get the daemon from http://www.tinkerforge.com/en/doc/Software/Brickd.html#brickd as
 source or binary package.
 
@@ -96,15 +97,20 @@ func (b *Bricker) dispatch(e *event.Event) {
 	if e.Packet == nil { // without a packet, no subscriber could be determined
 		go b.process(e, b.defaultsubscriber)
 	} else {
+		match := false
 		for _, chooser := range b.choosers {
 			h = hash.New(chooser, e.Packet.Head.Uid, e.Packet.Head.FunctionID)
 			if s, ok := b.subscriber[h]; ok {
+				match = true && (len(s) > 0)
 				go func(ev *event.Event, subs map[string]Subscriber) {
 					for _, s := range subs {
 						go b.process(e, s)
 					}
 				}(e, s)
 			}
+		}
+		if !match { // no subscriber hash matched against packet hash
+			go b.process(e, b.defaultsubscriber)
 		}
 	}
 }
