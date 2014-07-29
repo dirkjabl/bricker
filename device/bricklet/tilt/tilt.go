@@ -11,4 +11,8 @@ const (
 	function_disable_tilt_state_callback    = uint8(3)
 	function_is_tilt_state_callback_enabled = uint8(4)
 	callback_tilt_state                     = uint8(5)
+	// Tilt states
+	TiltClosed          = uint8(0)
+	TiltOpen            = uint8(1)
+	TiltClosedVibrating = uint8(2)
 )
