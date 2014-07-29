@@ -32,7 +32,7 @@ func GetAnalogValue(id string, uid uint32, handler func(device.Resulter, error))
 func GetAnalogValueFuture(brick bricker.Bricker, connectorname string, uid uint32) *AnalogValue {
 	future := make(chan *AnalogValue)
 	defer close(future)
-	sub := GetVoltage("getanalogvaluefuture"+device.GenId(), uid,
+	sub := GetAnalogValue("getanalogvaluefuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
 			var v *AnalogValue = nil
 			if err == nil {
