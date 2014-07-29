@@ -6,7 +6,7 @@ Analog In Bricklet     |  ×        |  ×           |
 Analog Out Bricklet    |  ×        |  ×           |
 Dual Button Bricklet   |  ×        |  ×           |
 Dual Relay Bricklet    |  ×        |  ×           |
-Humidity               |  ×        |              |
+Humidity               |  ×        |  ×           |
 IO-16 Bricklet         |  ×        |  ×           |
 IO-4 Bricklet          |  ×        |  ×           |
 LCD 20x4 Bricklet      |  ×        |  ×           |
