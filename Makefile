@@ -41,7 +41,8 @@ DIRS=\
 	device/bricklet/lcd20x4\
 	device/bricklet/piezobuzzer\
 	device/bricklet/piezospeaker\
-	device/bricklet/temperature
+	device/bricklet/temperature\
+	device/bricklet/tilt
 
 test.dirs: $(addsuffix .test, $(DIRS))
 deeptest.dirs: $(addsuffix .deeptest, $(DIRS))
