@@ -55,12 +55,13 @@ func (s *Subscription) CompareHash(h hash.Hash) bool {
 // String fullfill the stringer interface.
 func (s *Subscription) String() string {
 	t := "Subscription [Choosen: "
-	if (s.Choosen | hash.ChoosenFunctionID) == 1 {
+	if (s.Choosen & hash.ChoosenFunctionID) == hash.ChoosenFunctionID {
 		t += "FunctionID "
 	}
-	if (s.Choosen | hash.ChoosenUid) == 1 {
+	if (s.Choosen & hash.ChoosenUid) == hash.ChoosenUid {
 		t += "Uid"
 	}
+	t += fmt.Sprintf(" (%d)", s.Choosen)
 	t += fmt.Sprintf(", Uid: %d, Function-ID: %d", s.Uid, s.FunctionID)
 	if s.Request != nil {
 		t += fmt.Sprintf(", Request-Packet: %s", s.Request.String())
