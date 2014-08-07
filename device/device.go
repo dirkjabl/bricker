@@ -35,6 +35,15 @@ func New(id string) *Device {
 	return d
 }
 
+// Creates a device with a given subscription, resulter and handler and an id.
+func NewSubscriptionResulterHandler(id string, sub *subscription.Subscription, result Resulter, handler func(Resulter, error)) *Device {
+	d := New(FallbackId(id, "Device"))
+	d.SetSubscription(sub)
+	d.SetResult(result)
+	d.SetHandler(handler)
+	return d
+}
+
 // Subscription returns the stored subscription. (Getter)
 func (d *Device) Subscription() *subscription.Subscription {
 	if d == nil {

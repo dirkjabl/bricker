@@ -12,9 +12,13 @@ import (
 // SetTemperatureCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the peridicall callbacks.
 func SetTemperatureCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderPayloadEmptyResult(device.FallbackId(id, "SetTemperatureCallbackPeriod"),
-		uid, function_set_temperature_callback_period,
-		false, pe, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetTemperatureCallbackPeriod"),
+		Fid:        function_set_temperature_callback_period,
+		Uid:        uid,
+		Data:       pe,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetTemperatureCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
@@ -35,9 +39,13 @@ func SetTemperatureCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // GetTemperatureCallbackPeriod creates a subsctiber to get the callback period value.
 func GetTemperatureCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetTemperatureCallbackPeriod"),
-		uid, function_get_temperature_callback_period,
-		false, &device.Period{}, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetTemperatureCallbackPeriod"),
+		Fid:        function_get_temperature_callback_period,
+		Uid:        uid,
+		Result:     &device.Period{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetTemperatureCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
@@ -64,6 +72,12 @@ func GetTemperatureCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // TemperaturePeriod creates a subscriber for the periodical temperature callback.
 func TemperaturePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderNoPacketWithResult(device.FallbackId(id, "TemperaturePeriod"),
-		uid, callback_temperature, true, &Temperature{}, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "TemperaturePeriod"),
+		Fid:        callback_temperature,
+		Uid:        uid,
+		Result:     &Temperature{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }

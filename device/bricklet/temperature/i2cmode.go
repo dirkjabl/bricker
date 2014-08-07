@@ -23,8 +23,13 @@ type I2CMode struct {
 
 // SetI2CMode creates the subscriber to set the I2C mode.
 func SetI2CMode(id string, uid uint32, m *I2CMode, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderPayloadEmptyResult(device.FallbackId(id, "SetI2CMode"), uid,
-		function_set_i2c_mode, false, m, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetI2CMode"),
+		Fid:        function_set_i2c_mode,
+		Uid:        uid,
+		Data:       m,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetI2CModeFuture is a future pattern version for a synchronized call of the subscriber.
@@ -45,8 +50,13 @@ func SetI2CModeFuture(brick *bricker.Bricker, connectorname string, uid uint32, 
 
 // GetI2CMode creates the subscriber to get the I2C mode.
 func GetI2CMode(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetI2CMode"), uid,
-		function_get_i2c_mode, false, &I2CMode{}, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetI2CMode"),
+		Fid:        function_get_i2c_mode,
+		Uid:        uid,
+		Result:     &I2CMode{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetI2CModeFuture is a future pattern version for a synchronized call of the subscriber.

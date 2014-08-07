@@ -28,8 +28,13 @@ const (
 
 // GetTemperature creates a subscriber for getting the actual tempreture.
 func GetTemperature(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetTemperature"),
-		uid, function_get_temperature, false, &Temperature{}, handler)
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetTemperature"),
+		Fid:        function_get_temperature,
+		Uid:        uid,
+		Result:     &Temperature{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetTemperatureFuture is a future pattern version for a synchronized calll of the subscriber.
