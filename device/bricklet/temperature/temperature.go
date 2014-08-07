@@ -10,8 +10,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 const (
@@ -30,14 +28,8 @@ const (
 
 // GetTemperature creates a subscriber for getting the actual tempreture.
 func GetTemperature(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_temperature
-	gt := device.New(device.FallbackId(id, "GetTemperature"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gt.SetSubscription(sub)
-	gt.SetResult(&Temperature{})
-	gt.SetHandler(handler)
-	return gt
+	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetTemperature"),
+		uid, function_get_temperature, false, &Temperature{}, handler)
 }
 
 // GetTemperatureFuture is a future pattern version for a synchronized calll of the subscriber.

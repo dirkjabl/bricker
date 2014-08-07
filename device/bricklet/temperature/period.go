@@ -7,22 +7,14 @@ package temperature
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetTemperatureCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the peridicall callbacks.
 func SetTemperatureCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_temperature_callback_period
-	stcp := device.New(device.FallbackId(id, "SetTemperatureCallbackPeriod"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pe)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	stcp.SetSubscription(sub)
-	stcp.SetResult(&device.EmptyResult{})
-	stcp.SetHandler(handler)
-	return stcp
+	return device.NewHeaderPayloadEmptyResult(device.FallbackId(id, "SetTemperatureCallbackPeriod"),
+		uid, function_set_temperature_callback_period,
+		false, pe, handler)
 }
 
 // SetTemperatureCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
@@ -43,14 +35,9 @@ func SetTemperatureCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // GetTemperatureCallbackPeriod creates a subsctiber to get the callback period value.
 func GetTemperatureCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_temperature_callback_period
-	gtcp := device.New(device.FallbackId(id, "GetTemperatureCallbackPeriod"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gtcp.SetSubscription(sub)
-	gtcp.SetResult(&device.Period{})
-	gtcp.SetHandler(handler)
-	return gtcp
+	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetTemperatureCallbackPeriod"),
+		uid, function_get_temperature_callback_period,
+		false, &device.Period{}, handler)
 }
 
 // GetTemperatureCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
@@ -77,11 +64,6 @@ func GetTemperatureCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // TemperaturePeriod creates a subscriber for the periodical temperature callback.
 func TemperaturePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_temperature
-	tp := device.New(device.FallbackId(id, "TemperaturePeriod"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	tp.SetSubscription(sub)
-	tp.SetResult(&Temperature{})
-	tp.SetHandler(handler)
-	return tp
+	return device.NewHeaderNoPacketWithResult(device.FallbackId(id, "TemperaturePeriod"),
+		uid, callback_temperature, true, &Temperature{}, handler)
 }

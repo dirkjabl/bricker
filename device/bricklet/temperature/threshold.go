@@ -7,22 +7,13 @@ package temperature
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetTemperatureCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
 func SetTemperatureCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_temperature_callback_threshold
-	stct := device.New(device.FallbackId(id, "SetTemperatureCallbackThreshold"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, t)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	stct.SetSubscription(sub)
-	stct.SetResult(&device.EmptyResult{})
-	stct.SetHandler(handler)
-	return stct
+	return device.NewHeaderPayloadEmptyResult(device.FallbackId(id, "SetTemperatureCallbackThreshold"),
+		uid, function_set_temperature_callback_threshold, false, t, handler)
 }
 
 // SetTemperatureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -43,14 +34,8 @@ func SetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname
 
 // GetTemperatureCallbackThreshold creates the subscriber to get the callback thresold.
 func GetTemperatureCallbackThreshold(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_temperature_callback_threshold
-	gtct := device.New(device.FallbackId(id, "GetTemperatureCallbackThreshold"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gtct.SetSubscription(sub)
-	gtct.SetResult(&device.Threshold{})
-	gtct.SetHandler(handler)
-	return gtct
+	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetTemperatureCallbackThreshold"),
+		uid, function_get_temperature_callback_threshold, false, &device.Threshold{}, handler)
 }
 
 // GetTemperatureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -77,11 +62,6 @@ func GetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname
 
 // TemperatureReached creates a subscriber for the theshold triggered temperature callback.
 func TemperatureReached(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_temperature_reached
-	tp := device.New(device.FallbackId(id, "TemperatureReached"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, false)
-	tp.SetSubscription(sub)
-	tp.SetResult(&Temperature{})
-	tp.SetHandler(handler)
-	return tp
+	return device.NewHeaderNoPacketWithResult(device.FallbackId(id, "TemperatureReached"),
+		uid, callback_temperature_reached, true, &Temperature{}, handler)
 }

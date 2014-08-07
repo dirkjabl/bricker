@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 const (
@@ -25,14 +23,8 @@ type I2CMode struct {
 
 // SetI2CMode creates the subscriber to set the I2C mode.
 func SetI2CMode(id string, uid uint32, m *I2CMode, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_i2c_mode
-	sm := device.New(device.FallbackId(id, "SetI2CMode"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, m)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sm.SetSubscription(sub)
-	sm.SetResult(&device.EmptyResult{})
-	sm.SetHandler(handler)
-	return sm
+	return device.NewHeaderPayloadEmptyResult(device.FallbackId(id, "SetI2CMode"), uid,
+		function_set_i2c_mode, false, m, handler)
 }
 
 // SetI2CModeFuture is a future pattern version for a synchronized call of the subscriber.
@@ -53,14 +45,8 @@ func SetI2CModeFuture(brick *bricker.Bricker, connectorname string, uid uint32, 
 
 // GetI2CMode creates the subscriber to get the I2C mode.
 func GetI2CMode(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_i2c_mode
-	gm := device.New(device.FallbackId(id, "GetI2CMode"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gm.SetSubscription(sub)
-	gm.SetResult(&I2CMode{})
-	gm.SetHandler(handler)
-	return gm
+	return device.NewHeaderOnlyWithResult(device.FallbackId(id, "GetI2CMode"), uid,
+		function_get_i2c_mode, false, &I2CMode{}, handler)
 }
 
 // GetI2CModeFuture is a future pattern version for a synchronized call of the subscriber.
