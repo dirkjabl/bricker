@@ -26,17 +26,15 @@ const (
 
 // Enumerate creates the subscriber for the enumeration callback.
 // This subscriber collect all information of the connected devices.
-// If onlySub is set, no calling packet is generated, only the handler is subscribed.
-func Enumerate(id string, onlySub bool, handler func(device.Resulter, error)) *device.Device {
+// If withoutPacket is set, no requesting packet is generated, only the handler is subscribed.
+func Enumerate(id string, withoutPacket bool, handler func(device.Resulter, error)) *device.Device {
 	var p *packet.Packet = nil
-	if !onlySub {
+	if !withoutPacket {
 		p = packet.NewSimpleHeaderOnly(0, function_enumerate, true)
 	}
-	e := device.New(device.FallbackId(id, "Enumerate"))
-	e.SetSubscription(subscription.NewFid(callback_enumerate, p, true))
-	e.SetResult(&Enumeration{})
-	e.SetHandler(handler)
-	return e
+	return device.NewSubscriptionResulterHandler(device.FallbackId(id, "Enumerate"),
+		subscription.NewFid(callback_enumerate, p, true),
+		&Enumeration{}, handler)
 }
 
 // Enumeration result structure.
