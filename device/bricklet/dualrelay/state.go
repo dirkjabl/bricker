@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -22,14 +20,13 @@ import (
 //
 // Default state is &State{false, false}.
 func SetState(id string, uid uint32, s *State, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_state
-	ss := device.New(device.FallbackId(id, "SetState"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewStateRaw(s))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ss.SetSubscription(sub)
-	ss.SetResult(&device.EmptyResult{})
-	ss.SetHandler(handler)
-	return ss
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetState"),
+		Fid:        function_set_state,
+		Uid:        uid,
+		Data:       NewStateRaw(s),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetStateFuture is a future pattern version for a synchronized call of the subscriber.
@@ -50,14 +47,13 @@ func SetStateFuture(brick bricker.Bricker, connectorname string, uid uint32, s *
 
 // GetState creates a subscriber to get the relay states.
 func GetState(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_state
-	gs := device.New(device.FallbackId(id, "GetState"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gs.SetSubscription(sub)
-	gs.SetResult(&State{})
-	gs.SetHandler(handler)
-	return gs
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetState"),
+		Fid:        function_get_state,
+		Uid:        uid,
+		Result:     &State{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetStateFuture is a future pattern version for a synchronized call of the subscriber.
@@ -85,14 +81,13 @@ func GetStateFuture(brick bricker.Bricker, connectorname string, uid uint32) *St
 // SetSelectedState creates a subscriber to set only one relay.
 // The not seleced relay remains untouched.
 func SetSelectedState(id string, uid uint32, s *SelectedState, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_selected_state
-	sss := device.New(device.FallbackId(id, "SetSelectedState"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewSelectedStateRaw(s))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sss.SetSubscription(sub)
-	sss.SetResult(&device.EmptyResult{})
-	sss.SetHandler(handler)
-	return sss
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetSelectedState"),
+		Fid:        function_set_selected_state,
+		Uid:        uid,
+		Data:       NewSelectedStateRaw(s),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetSelectedStateFuture is a future pattern version for a synchronized call of the subscriber.
