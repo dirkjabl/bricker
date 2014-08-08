@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -18,14 +16,13 @@ import (
 // Direction could be 'i' (input) or 'o' (output).
 // If the direction is configured as input, the value is either pull-up or default (set as true or false).
 func SetConfiguration(id string, uid uint32, c *Configuration, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_configuration
-	sc := device.New(device.FallbackId(id, "SetConfiguration"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewConfigurationRaw(c))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sc.SetSubscription(sub)
-	sc.SetResult(&device.EmptyResult{})
-	sc.SetHandler(handler)
-	return sc
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetConfiguration"),
+		Fid:        function_set_configuration,
+		Uid:        uid,
+		Data:       NewConfigurationRaw(c),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetConfigurationFuture is a future pattern version for a synchronized call of the subscriber.
@@ -48,14 +45,13 @@ func SetConfigurationFuture(brick *bricker.Bricker, connectorname string, uid ui
 // Returns a value bitmask and a direction bitmask.
 // A 1 in the direction bitmask means input and a 0 in the bitmask means output.
 func GetConfiguration(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_configuration
-	gc := device.New(device.FallbackId(id, "GetConfiguration"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gc.SetSubscription(sub)
-	gc.SetResult(&Configurations{})
-	gc.SetHandler(handler)
-	return gc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetConfiguration"),
+		Fid:        function_get_configuration,
+		Uid:        uid,
+		Result:     &Configurations{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetConfigurationFuture is a future pattern version for a synchronized all of the subscriber.

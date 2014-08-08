@@ -9,21 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetInterrupt creates the subscriber to set the interrupt bitmask.
 func SetInterrupt(id string, uid uint32, i *Interrupt, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_interrupt
-	si := device.New(device.FallbackId(id, "SetInterrupt"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, i)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	si.SetSubscription(sub)
-	si.SetResult(&device.EmptyResult{})
-	si.SetHandler(handler)
-	return si
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetInterrupt"),
+		Fid:        function_set_interrupt,
+		Uid:        uid,
+		Data:       i,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetInterruptFuture is a future pattern version for a synchronized call of the subscriber.
@@ -44,14 +41,13 @@ func SetInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32
 
 // GetInterrupt creates the subscriber to get the interrupt bitmask.
 func GetInterrupt(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_interrupt
-	gi := device.New(device.FallbackId(id, "GetInterrupt"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gi.SetSubscription(sub)
-	gi.SetResult(&Interrupt{})
-	gi.SetHandler(handler)
-	return gi
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetInterrupt"),
+		Fid:        function_get_interrupt,
+		Uid:        uid,
+		Result:     &Interrupt{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetInterruptFuture is a future pattern version for a synchronized all of the subscriber.
@@ -80,13 +76,14 @@ func GetInterruptFuture(brick *bricker.Bricker, connectorname string, uid uint32
 // This callback is triggered whenever a change of the voltage level is detected
 // on pins where the interrupt was activated with SetInterrupt.
 func InterruptTrigger(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_interrupt
-	it := device.New(device.FallbackId(id, "InterruptTrigger"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	it.SetSubscription(sub)
-	it.SetResult(&Interrupts{})
-	it.SetHandler(handler)
-	return it
+	return device.Generator{
+		Id:         device.FallbackId(id, "InterruptTrigger"),
+		Fid:        callback_interrupt,
+		Uid:        uid,
+		Result:     &Interrupts{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // Interrupt bitmask type.
