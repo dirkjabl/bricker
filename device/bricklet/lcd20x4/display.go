@@ -7,21 +7,16 @@ package lcd20x4
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // ClearDisplay is a subscriber to clear the LCD display.
 func ClearDisplay(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_clear_display
-	cd := device.New(device.FallbackId(id, "ClearDisplay"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	cd.SetSubscription(sub)
-	cd.SetResult(&device.EmptyResult{})
-	cd.SetHandler(handler)
-	return cd
+	return device.Generator{
+		Id:         device.FallbackId(id, "ClearDisplay"),
+		Fid:        function_clear_display,
+		Uid:        uid,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // ClearDisplayFuture is the future version of the ClearDisplay subscriber.

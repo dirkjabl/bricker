@@ -9,20 +9,17 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func SetConfig(id string, uid uint32, cursor *Cursor, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_config
-	sc := device.New(device.FallbackId(id, "SetConfig"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewCursorRaw(cursor))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sc.SetSubscription(sub)
-	sc.SetResult(&device.EmptyResult{})
-	sc.SetHandler(handler)
-	return sc
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetConfig"),
+		Fid:        function_set_config,
+		Uid:        uid,
+		Data:       NewCursorRaw(cursor),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 func SetConfigFuture(brick *bricker.Bricker, connectorname string, uid uint32, cursor *Cursor) bool {
@@ -41,14 +38,13 @@ func SetConfigFuture(brick *bricker.Bricker, connectorname string, uid uint32, c
 }
 
 func GetConfig(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_config
-	gc := device.New(device.FallbackId(id, "GetConfig"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gc.SetSubscription(sub)
-	gc.SetResult(&Cursor{})
-	gc.SetHandler(handler)
-	return gc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetConfig"),
+		Fid:        function_get_config,
+		Uid:        uid,
+		Result:     &Cursor{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 func GetConfigFuture(brick *bricker.Bricker, connectorname string, uid uint32) *Cursor {

@@ -9,20 +9,16 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func BacklightOn(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_backlight_on
-	blon := device.New(device.FallbackId(id, "BacklightOn"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	blon.SetSubscription(sub)
-	blon.SetResult(&device.EmptyResult{})
-	blon.SetHandler(handler)
-	return blon
+	return device.Generator{
+		Id:         device.FallbackId(id, "BacklightOn"),
+		Fid:        function_backlight_on,
+		Uid:        uid,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 func BacklightOnFuture(brick *bricker.Bricker, connectorname string, uid uint32) bool {
@@ -41,14 +37,12 @@ func BacklightOnFuture(brick *bricker.Bricker, connectorname string, uid uint32)
 }
 
 func BacklightOff(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_backlight_off
-	bloff := device.New(device.FallbackId(id, "BacklightOff"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	bloff.SetSubscription(sub)
-	bloff.SetResult(&device.EmptyResult{})
-	bloff.SetHandler(handler)
-	return bloff
+	return device.Generator{
+		Id:         device.FallbackId(id, "BacklightOff"),
+		Fid:        function_backlight_off,
+		Uid:        uid,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 func BacklightOffFuture(brick *bricker.Bricker, connectorname string, uid uint32) bool {
@@ -67,14 +61,13 @@ func BacklightOffFuture(brick *bricker.Bricker, connectorname string, uid uint32
 }
 
 func IsBacklightOn(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_is_backlight_on
-	iblo := device.New(device.FallbackId(id, "IsBacklightOn"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	iblo.SetSubscription(sub)
-	iblo.SetResult(&Backlight{})
-	iblo.SetHandler(handler)
-	return iblo
+	return device.Generator{
+		Id:         device.FallbackId(id, "IsBacklightOn"),
+		Fid:        function_is_backlight_on,
+		Uid:        uid,
+		Result:     &Backlight{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 func IsBacklightOnFuture(brick *bricker.Bricker, connectorname string, uid uint32) *Backlight {
