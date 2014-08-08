@@ -9,21 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // GetTiltState creates a subscriber to get the current tilt state.
 func GetTiltState(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_tilt_state
-	gts := device.New(device.FallbackId(id, "GetTiltState"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gts.SetSubscription(sub)
-	gts.SetResult(&TiltState{})
-	gts.SetHandler(handler)
-	return gts
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetTiltState"),
+		Fid:        function_get_tilt_state,
+		Uid:        uid,
+		Result:     &TiltState{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetTiltStateFuture is a future pattern version for a synchronized calll of the subscriber.
@@ -50,14 +47,12 @@ func GetTiltStateFuture(brick *bricker.Bricker, connectorname string, uid uint32
 
 // EnableTiltStateCallback creates a subscriber to enable the TiltStateChanged callback.
 func EnableTiltStateCallback(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_enable_tilt_state_callback
-	etsc := device.New(device.FallbackId(id, "EnableTiltStateCallback"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	etsc.SetSubscription(sub)
-	etsc.SetResult(&device.EmptyResult{})
-	etsc.SetHandler(handler)
-	return etsc
+	return device.Generator{
+		Id:         device.FallbackId(id, "EnableTiltStateCallback"),
+		Fid:        function_enable_tilt_state_callback,
+		Uid:        uid,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // EnableTiltStateCallbackFuture is a future pattern version for a synchronized call of the subscriber.
@@ -78,14 +73,12 @@ func EnableTiltStateCallbackFuture(brick *bricker.Bricker, connectorname string,
 
 // DisableTiltStateCallback creates a subscriber to disable the TiltStateChanged callback.
 func DisableTiltStateCallback(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_disable_tilt_state_callback
-	dtsc := device.New(device.FallbackId(id, "EnableTiltStateCallback"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	dtsc.SetSubscription(sub)
-	dtsc.SetResult(&device.EmptyResult{})
-	dtsc.SetHandler(handler)
-	return dtsc
+	return device.Generator{
+		Id:         device.FallbackId(id, "EnableTiltStateCallback"),
+		Fid:        function_disable_tilt_state_callback,
+		Uid:        uid,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // DisableTiltStateCallbackFuture is a future pattern version for a synchronized call of the subscriber.
@@ -106,14 +99,13 @@ func DisableTiltStateCallbackFuture(brick *bricker.Bricker, connectorname string
 
 // IsTiltStateCallbackEnabled creates a subscriber for calling, if the TiltStateChanged callback is enabled.
 func IsTiltStateCallbackEnabled(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_is_tilt_state_callback_enabled
-	itsce := device.New(device.FallbackId(id, "IsTiltStateCallbackEnabled"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	itsce.SetSubscription(sub)
-	itsce.SetResult(&Enabled{})
-	itsce.SetHandler(handler)
-	return itsce
+	return device.Generator{
+		Id:         device.FallbackId(id, "IsTiltStateCallbackEnabled"),
+		Fid:        function_is_tilt_state_callback_enabled,
+		Uid:        uid,
+		Result:     &Enabled{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // IsTiltStateCallbackEnabledFuture is a future pattern version for a synchronized calll of the subscriber.
@@ -140,13 +132,14 @@ func IsTiltStateCallbackEnabledFuture(brick *bricker.Bricker, connectorname stri
 
 // TiltStateChanged creates a subscriber which is called every time the tilt state changed.
 func TiltStateChanged(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_tilt_state
-	tsc := device.New(device.FallbackId(id, "TiltStateChanged"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	tsc.SetSubscription(sub)
-	tsc.SetResult(&TiltState{})
-	tsc.SetHandler(handler)
-	return tsc
+	return device.Generator{
+		Id:         device.FallbackId(id, "TiltStateChanged"),
+		Fid:        callback_tilt_state,
+		Uid:        uid,
+		Result:     &TiltState{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 /*
