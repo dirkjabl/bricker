@@ -7,23 +7,19 @@ package humidity
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetHumidityCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
 // HumidityPeriod is only triggered if the voltage has changed since the last triggering.
 func SetHumidityCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_humidity_callback_period
-	shcp := device.New(device.FallbackId(id, "SetHumidityCallbackPeriod"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pe)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	shcp.SetSubscription(sub)
-	shcp.SetResult(&device.EmptyResult{})
-	shcp.SetHandler(handler)
-	return shcp
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetHumidityCallbackPeriod"),
+		Fid:        function_set_humidity_callback_period,
+		Uid:        uid,
+		Data:       pe,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetHumidityCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
@@ -44,14 +40,13 @@ func SetHumidityCallbackPeriodFuture(brick *bricker.Bricker, connectorname strin
 
 // GetHumidityCallbackPeriod creates a subsctiber to get the callback period value.
 func GetHumidityCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_humidity_callback_period
-	ghcp := device.New(device.FallbackId(id, "GetHumidityCallbackPeriod"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ghcp.SetSubscription(sub)
-	ghcp.SetResult(&device.Period{})
-	ghcp.SetHandler(handler)
-	return ghcp
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetHumidityCallbackPeriod"),
+		Fid:        function_get_humidity_callback_period,
+		Uid:        uid,
+		Result:     &device.Period{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetHumidityCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
@@ -80,14 +75,13 @@ func GetHumidityCallbackPeriodFuture(brick *bricker.Bricker, connectorname strin
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
 // AnalogValuePeriod is only triggered if the voltage has changed since the last triggering.
 func SetAnalogValueCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_analog_value_callback_period
-	savcp := device.New(device.FallbackId(id, "SetAnalogValueCallbackPeriod"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pe)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	savcp.SetSubscription(sub)
-	savcp.SetResult(&device.EmptyResult{})
-	savcp.SetHandler(handler)
-	return savcp
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetAnalogValueCallbackPeriod"),
+		Fid:        function_set_analog_value_callback_period,
+		Uid:        uid,
+		Data:       pe,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetAnalogValueCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
@@ -108,14 +102,13 @@ func SetAnalogValueCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // GetAnalogValueCallbackPeriod creates a subsctiber to get the callback period value.
 func GetAnalogValueCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_analog_value_callback_period
-	gavcp := device.New(device.FallbackId(id, "GetAnalogValueCallbackPeriod"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gavcp.SetSubscription(sub)
-	gavcp.SetResult(&device.Period{})
-	gavcp.SetHandler(handler)
-	return gavcp
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetAnalogValueCallbackPeriod"),
+		Fid:        function_get_analog_value_callback_period,
+		Uid:        uid,
+		Result:     &device.Period{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetAnalogValueCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
@@ -143,23 +136,25 @@ func GetAnalogValueCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 // HumidityPeriod creates a subscriber for the periodical humidity callback.
 // Is only triggered if the voltage changed, since last triggering.
 func HumidityPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_humidity
-	hp := device.New(device.FallbackId(id, "HumidityPeriod"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	hp.SetSubscription(sub)
-	hp.SetResult(&Humidity{})
-	hp.SetHandler(handler)
-	return hp
+	return device.Generator{
+		Id:         device.FallbackId(id, "HumidityPeriod"),
+		Fid:        callback_humidity,
+		Uid:        uid,
+		Result:     &Humidity{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // AnalogValuePeriod creates a subscriber for the periodical analog value callback.
 // Is only triggered if the value changed, since last triggering.
 func AnalogValuePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_analog_value
-	avp := device.New(device.FallbackId(id, "AnalogValuePeriod"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	avp.SetSubscription(sub)
-	avp.SetResult(&AnalogValue{})
-	avp.SetHandler(handler)
-	return avp
+	return device.Generator{
+		Id:         device.FallbackId(id, "AnalogValuePeriod"),
+		Fid:        callback_analog_value,
+		Uid:        uid,
+		Result:     &AnalogValue{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
