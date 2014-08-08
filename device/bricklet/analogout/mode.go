@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -23,14 +21,13 @@ The default value is 0.
   3: 500k Ohm resistor to ground
 */
 func SetMode(id string, uid uint32, m *Mode, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_mode
-	sr := device.New(device.FallbackId(id, "SetMode"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, m)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sr.SetSubscription(sub)
-	sr.SetResult(&device.EmptyResult{})
-	sr.SetHandler(handler)
-	return sr
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetMode"),
+		Fid:        function_set_mode,
+		Uid:        uid,
+		Data:       m,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetModeFuture is a future pattern version for a synchronized call of the subscriber.
@@ -51,14 +48,13 @@ func SetModeFuture(brick bricker.Bricker, connectorname string, uid uint32, m *M
 
 // GetMode creates a subscriber to get the measurement mode value.
 func GetMode(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_mode
-	gm := device.New(device.FallbackId(id, "GetMode"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gm.SetSubscription(sub)
-	gm.SetResult(&Mode{})
-	gm.SetHandler(handler)
-	return gm
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetMode"),
+		Fid:        function_get_mode,
+		Uid:        uid,
+		Result:     &Mode{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetModeFuture is a future pattern version for a synchronized call of the subscriber.

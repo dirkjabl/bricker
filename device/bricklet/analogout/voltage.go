@@ -9,20 +9,17 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetVoltage creates A subscriber to return the actual voltage (mV).
 func SetVoltage(id string, uid uint32, v *Voltage, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_voltage
-	sv := device.New(device.FallbackId(id, "SetVoltage"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, v)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sv.SetSubscription(sub)
-	sv.SetResult(&device.EmptyResult{})
-	sv.SetHandler(handler)
-	return sv
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetVoltage"),
+		Fid:        function_set_voltage,
+		Uid:        uid,
+		Data:       v,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetRangeFuture is a future pattern version for a synchronized call of the subscriber.
@@ -43,14 +40,13 @@ func SetVoltageFuture(brick bricker.Bricker, connectorname string, uid uint32, v
 
 // GetVoltage creates A subscriber to return the actual voltage (mV).
 func GetVoltage(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_voltage
-	gv := device.New(device.FallbackId(id, "GetVoltage"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gv.SetSubscription(sub)
-	gv.SetResult(&Voltage{})
-	gv.SetHandler(handler)
-	return gv
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetVoltage"),
+		Fid:        function_get_voltage,
+		Uid:        uid,
+		Result:     &Voltage{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetVoltageFuture is a future pattern version for a synchronized call of the subscriber.
