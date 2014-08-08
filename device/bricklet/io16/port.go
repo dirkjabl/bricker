@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -21,14 +19,13 @@ This function does nothing for pins that are configured as input.
 Pull-up resistors can be switched on with SetPortConfiguration.
 */
 func SetPort(id string, uid uint32, pv *PortValue, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_port
-	sp := device.New(device.FallbackId(id, "SetPort"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pv)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sp.SetSubscription(sub)
-	sp.SetResult(&device.EmptyResult{})
-	sp.SetHandler(handler)
-	return sp
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetPort"),
+		Fid:        function_set_port,
+		Uid:        uid,
+		Data:       pv,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetPortFuture is a future pattern version for a synchronized call of the subscriber.
@@ -50,14 +47,14 @@ func SetPortFuture(brick *bricker.Bricker, connectorname string, uid uint32, pv 
 // GetPort creates a subscriber to get the value bitmask (8bit) for a port.
 // Returns a bitmask of the values that are currently measured on the specified port.
 func GetPort(id string, uid uint32, po *Port, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_port
-	gp := device.New(device.FallbackId(id, "GetPort"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, po)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gp.SetSubscription(sub)
-	gp.SetResult(&Value{})
-	gp.SetHandler(handler)
-	return gp
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetPort"),
+		Fid:        function_get_port,
+		Uid:        uid,
+		Result:     &Value{},
+		Data:       po,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetPortFuture is a future pattern version for a synchronized all of the subscriber.

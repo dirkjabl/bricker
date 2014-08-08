@@ -9,21 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetPortMonoflop creates the subscriber to set the monoflop timer value
 // for specifed output pins (per bitmap) and port.
 func SetPortMonoflop(id string, uid uint32, m *Monoflops, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_port_monoflop
-	spm := device.New(device.FallbackId(id, "SetPortMonoflop"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, m)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	spm.SetSubscription(sub)
-	spm.SetResult(&device.EmptyResult{})
-	spm.SetHandler(handler)
-	return spm
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetPortMonoflop"),
+		Fid:        function_set_port_monoflop,
+		Uid:        uid,
+		Data:       m,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetPortMonoflopFuture is a future pattern version for a synchronized call of the subscriber.
@@ -45,14 +42,14 @@ func SetPortMonoflopFuture(brick *bricker.Bricker, connectorname string, uid uin
 // GetMonoflop creates a subscriber for getting the actual monoflop value.
 // If the timer is not running currently, the remaining time will be returned as 0.
 func GetPortMonoflop(id string, uid uint32, pp *PortPin, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_port_monoflop
-	gpm := device.New(device.FallbackId(id, "GetPortMonoflop"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pp)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gpm.SetSubscription(sub)
-	gpm.SetResult(&Monoflop{})
-	gpm.SetHandler(handler)
-	return gpm
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetPortMonoflop"),
+		Fid:        function_get_port_monoflop,
+		Uid:        uid,
+		Result:     &Monoflop{},
+		Data:       pp,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetPortMonoflopFuture is a future pattern version for a synchronized all of the subscriber.
@@ -84,13 +81,14 @@ The response values contain the involved pins and the current value of the pins
 (the value after the monoflop).
 */
 func MonoflopDone(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_monoflop_done
-	md := device.New(device.FallbackId(id, "MonoflopDone"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	md.SetSubscription(sub)
-	md.SetResult(&Values{})
-	md.SetHandler(handler)
-	return md
+	return device.Generator{
+		Id:         device.FallbackId(id, "MonoflopDone"),
+		Fid:        callback_monoflop_done,
+		Uid:        uid,
+		Result:     &Values{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // Monoflops is a type to set bitmask(4bit) based the time to hold the value.
