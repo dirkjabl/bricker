@@ -2,32 +2,32 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package analogin
+package ambientlight
 
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 )
 
-// SetVoltageCallbackPeriod creates the subscriber to set the callback period.
+// SetIlluminanceCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
-// VoltagePeriod is only triggered if the voltage has changed since the last triggering.
-func SetVoltageCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
+// IlluminancePeriod is only triggered if the illuminance has changed since the last triggering.
+func SetIlluminanceCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "SetVoltageCallbackPeriod"),
-		Fid:        function_set_voltage_callback_period,
+		Id:         device.FallbackId(id, "SetIlluminanceCallbackPeriod"),
+		Fid:        function_set_illuminance_callback_period,
 		Uid:        uid,
 		Data:       pe,
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
-// SetVoltageCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
+// SetIlluminanceCallbackPeriodFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetVoltageCallbackPeriodFuture(brick *bricker.Bricker, connectorname string, uid uint32, pe *device.Period) bool {
+func SetIlluminanceCallbackPeriodFuture(brick *bricker.Bricker, connectorname string, uid uint32, pe *device.Period) bool {
 	future := make(chan bool)
 	defer close(future)
-	sub := SetVoltageCallbackPeriod("setvoltagecallbackperiodfuture"+device.GenId(), uid, pe,
+	sub := SetIlluminanceCallbackPeriod("setilluminancecallbackperiodfuture"+device.GenId(), uid, pe,
 		func(r device.Resulter, err error) {
 			future <- device.IsEmptyResultOk(r, err)
 		})
@@ -38,23 +38,23 @@ func SetVoltageCallbackPeriodFuture(brick *bricker.Bricker, connectorname string
 	return <-future
 }
 
-// GetVoltageCallbackPeriod creates a subsctiber to get the callback period value.
-func GetVoltageCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
+// GetIlluminanceCallbackPeriod creates a subsctiber to get the callback period value.
+func GetIlluminanceCallbackPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "GetVoltageCallbackPeriod"),
-		Fid:        function_get_voltage_callback_period,
+		Id:         device.FallbackId(id, "GetIlluminanceCallbackPeriod"),
+		Fid:        function_get_illuminance_callback_period,
 		Uid:        uid,
 		Result:     &device.Period{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
-// GetVoltageCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
+// GetIlluminanceCallbackPeriodFuture is a future pattern version for a synchronized call of the subsctiber.
 // If an error occur, the result is nil.
-func GetVoltageCallbackPeriodFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Period {
+func GetIlluminanceCallbackPeriodFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Period {
 	future := make(chan *device.Period)
 	defer close(future)
-	sub := GetVoltageCallbackPeriod("getvoltagecallbackperiodfuture"+device.GenId(), uid,
+	sub := GetIlluminanceCallbackPeriod("getilluminancecallbackperiodfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
 			var v *device.Period = nil
 			if err == nil {
@@ -73,7 +73,7 @@ func GetVoltageCallbackPeriodFuture(brick *bricker.Bricker, connectorname string
 
 // SetAnalogValueCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
-// AnalogValuePeriod is only triggered if the voltage has changed since the last triggering.
+// AnalogValuePeriod is only triggered if the illuminance has changed since the last triggering.
 func SetAnalogValueCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetAnalogValueCallbackPeriod"),
@@ -133,14 +133,14 @@ func GetAnalogValueCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 	return <-future
 }
 
-// VoltagePeriod creates a subscriber for the periodical voltage callback.
+// IlluminancePeriod creates a subscriber for the periodical illuminance callback.
 // Is only triggered if the voltage changed, since last triggering.
-func VoltagePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
+func IlluminancePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "VoltagePeriod"),
-		Fid:        callback_voltage,
+		Id:         device.FallbackId(id, "IlluminancePeriod"),
+		Fid:        callback_illuminance,
 		Uid:        uid,
-		Result:     &Voltage{},
+		Result:     &Illuminance{},
 		Handler:    handler,
 		IsCallback: true,
 		WithPacket: false}.CreateDevice()

@@ -9,21 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetMonoflop creates the subscriber to set the monoflop timer value for specifed output relay.
 func SetMonoflop(id string, uid uint32, m *Monoflops, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_monoflop
-	sm := device.New(device.FallbackId(id, "SetMonoflop"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewMonoflopsRaw(m))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sm.SetSubscription(sub)
-	sm.SetResult(&device.EmptyResult{})
-	sm.SetHandler(handler)
-	return sm
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetMonoflop"),
+		Fid:        function_set_monoflop,
+		Uid:        uid,
+		Data:       NewMonoflopsRaw(m),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetMonoflopFuture is a future pattern version for a synchronized call of the subscriber.
@@ -44,14 +41,14 @@ func SetMonoflopFuture(brick *bricker.Bricker, connectorname string, uid uint32,
 
 // GetMonoflop creates a subscriber for getting the actual monoflop value.
 func GetMonoflop(id string, uid uint32, r *Relay, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_monoflop
-	gm := device.New(device.FallbackId(id, "GetMonoflop"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, r)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gm.SetSubscription(sub)
-	gm.SetResult(&Monoflop{})
-	gm.SetHandler(handler)
-	return gm
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetMonoflop"),
+		Fid:        function_get_monoflop,
+		Uid:        uid,
+		Result:     &Monoflop{},
+		Data:       r,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetMonoflopFuture is a future pattern version for a synchronized all of the subscriber.
@@ -81,13 +78,14 @@ MonoflopDone creates a subscriber for the monoflop done callback.
 This callback is triggered whenever a monoflop timer reaches 0.
 */
 func MonoflopDone(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_monoflop_done
-	md := device.New(device.FallbackId(id, "MonoflopDone"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	md.SetSubscription(sub)
-	md.SetResult(&Value{})
-	md.SetHandler(handler)
-	return md
+	return device.Generator{
+		Id:         device.FallbackId(id, "MonoflopDone"),
+		Fid:        callback_monoflop_done,
+		Uid:        uid,
+		Result:     &Value{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // Monoflops is a type to set bitmask(4bit) based the time to hold the value.

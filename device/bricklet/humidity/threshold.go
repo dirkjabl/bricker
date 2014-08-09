@@ -2,31 +2,31 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package analogin
+package humidity
 
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 )
 
-// SetVoltageCallbackThreshold creates the subscriber to set the callback thresold.
+// SetHumidityCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
-func SetVoltageCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
+func SetHumidityCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "SetVoltageCallbackThreshold"),
-		Fid:        function_set_voltage_callback_threshold,
+		Id:         device.FallbackId(id, "SetHumidityCallbackThreshold"),
+		Fid:        function_set_humidity_callback_threshold,
 		Uid:        uid,
 		Data:       t,
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
-// SetVoltageCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
+// SetHumidityCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetVoltageCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
+func SetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
 	future := make(chan bool)
 	defer close(future)
-	sub := SetVoltageCallbackThreshold("setvoltagecallbackthresholdfuture"+device.GenId(), uid, t,
+	sub := SetHumidityCallbackThreshold("sethumiditycallbackthresholdfuture"+device.GenId(), uid, t,
 		func(r device.Resulter, err error) {
 			future <- device.IsEmptyResultOk(r, err)
 		})
@@ -37,23 +37,23 @@ func SetVoltageCallbackThresholdFuture(brick *bricker.Bricker, connectorname str
 	return <-future
 }
 
-// GetVoltageCallbackThreshold creates the subscriber to get the callback thresold.
-func GetVoltageCallbackThreshold(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
+// GetHumidityCallbackThreshold creates the subscriber to get the callback thresold.
+func GetHumidityCallbackThreshold(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "GetVoltageCallbackThreshold"),
-		Fid:        function_get_voltage_callback_threshold,
+		Id:         device.FallbackId(id, "GetHumidityCallbackThreshold"),
+		Fid:        function_get_humidity_callback_threshold,
 		Uid:        uid,
 		Result:     &device.Threshold{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
-// GetVoltageCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
+// GetHumidityCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is nil.
-func GetVoltageCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
+func GetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
 	future := make(chan *device.Threshold)
 	defer close(future)
-	sub := GetVoltageCallbackThreshold("getvoltagecallbackthresholdfuture"+device.GenId(), uid,
+	sub := GetHumidityCallbackThreshold("gethumiditycallbackthresholdfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
 			var v *device.Threshold = nil
 			if err == nil {
@@ -131,13 +131,13 @@ func GetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname
 	return <-future
 }
 
-// VoltageReached creates a subscriber for the theshold triggered voltage callback.
-func VoltageReached(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
+// HumidityReached creates a subscriber for the theshold triggered voltage callback.
+func HumidityReached(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
-		Id:         device.FallbackId(id, "VoltageReached"),
-		Fid:        callback_voltage_reached,
+		Id:         device.FallbackId(id, "HumidityReached"),
+		Fid:        callback_humidity_reached,
 		Uid:        uid,
-		Result:     &Voltage{},
+		Result:     &Humidity{},
 		Handler:    handler,
 		IsCallback: true,
 		WithPacket: false}.CreateDevice()

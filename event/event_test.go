@@ -98,8 +98,7 @@ func TestCopy(t *testing.T) {
 func TestString(t *testing.T) {
 	err := errors.New("Error")
 	ev := NewError(err)
-	// TODO: RFC3339Nano differs in one count !!! Should be changed...
-	if !(strings.Index(ev.String(), "Error: Error") == 61 || strings.Index(ev.String(), "Error: Error") == 60) {
+	if strings.Index(ev.String(), "Error: Error") < 0 {
 		t.Fatalf("Error TestString: String result not correct: %s (%d)",
 			ev.String(), strings.Index(ev.String(), "Error: Error"))
 	}

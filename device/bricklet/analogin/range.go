@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Collection of subscriber for the Analog In Bricklet.
 package analogin
 
 import (
@@ -10,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -25,14 +22,13 @@ The default value is 0.
   5: 0V - 3.3V,  0.81mV resolution,
 */
 func SetRange(id string, uid uint32, r *Range, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_range
-	sr := device.New(device.FallbackId(id, "SetRange"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, r)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sr.SetSubscription(sub)
-	sr.SetResult(&device.EmptyResult{})
-	sr.SetHandler(handler)
-	return sr
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetRange"),
+		Fid:        function_set_range,
+		Uid:        uid,
+		Data:       r,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetRangeFuture is a future pattern version for a synchronized call of the subscriber.
@@ -53,14 +49,13 @@ func SetRangeFuture(brick bricker.Bricker, connectorname string, uid uint32, r *
 
 // GetRange creates a subscriber to get the measurement range value.
 func GetRange(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_range
-	gr := device.New(device.FallbackId(id, "GetRange"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gr.SetSubscription(sub)
-	gr.SetResult(&Range{})
-	gr.SetHandler(handler)
-	return gr
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetRange"),
+		Fid:        function_get_range,
+		Uid:        uid,
+		Result:     &Range{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetRangeFuture is a future pattern version for a synchronized call of the subscriber.

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package analogin
+package humidity
 
 import (
 	"github.com/dirkjabl/bricker"
@@ -37,7 +37,7 @@ func SetDebouncePeriodFuture(brick *bricker.Bricker, connectorname string, uid u
 	return <-future
 }
 
-// GetDebouncePeriod creates the subscriber to get the debounce period.
+// GetDebouncePeriod creates the subscriber to set the debounce period.
 func GetDebouncePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "GetDebouncePeriod"),

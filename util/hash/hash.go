@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	ChoosenNothing       = 0                              // nothing choosen
-	ChoosenFunctionID    = 1                              // FunctionID choosen
-	ChoosenUid           = 2                              // Uid choosen
+	ChoosenNothing       = uint8(0)                              // nothing choosen
+	ChoosenFunctionID    = uint8(1)                              // FunctionID choosen
+	ChoosenUid           = uint8(2)                              // Uid choosen
 	ChoosenFunctionIDUid = ChoosenFunctionID | ChoosenUid // FunctionID and Uid choosen
 )
 

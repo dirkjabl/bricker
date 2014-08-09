@@ -9,20 +9,17 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetCustomCharacter creates a subsriber to set a custom character.
 func SetCustomCharacter(id string, uid uint32, c *CustomCharacter, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_custom_character
-	scc := device.New(device.FallbackId(id, "SetCustomCharacter"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, c)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	scc.SetSubscription(sub)
-	scc.SetResult(&device.EmptyResult{})
-	scc.SetHandler(handler)
-	return scc
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetCustomCharacter"),
+		Fid:        function_set_custom_character,
+		Uid:        uid,
+		Data:       c,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetCustomCharacterFuture is a future pattern version for a synchronized call of the subscriber.
@@ -44,14 +41,14 @@ func SetCustomCharacterFuture(brick *bricker.Bricker, connectorname string, uid 
 
 // GetCustomCharacter creates a subscriber to get a stored custom character at the given index.
 func GetCustomCharacter(id string, uid uint32, index uint8, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_custom_character
-	gcc := device.New(device.FallbackId(id, "GetCustomCharacter"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, index)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gcc.SetSubscription(sub)
-	gcc.SetResult(&Character{})
-	gcc.SetHandler(handler)
-	return gcc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetCustomCharacter"),
+		Fid:        function_get_custom_character,
+		Uid:        uid,
+		Result:     &Character{},
+		Data:       index,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // CustomCharacter is the type for a custom character.

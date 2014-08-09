@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package analogin
+package ambientlight
 
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 )
 
-// SetDebouncePeriod creates the subscriber to get the debounce period.
-// The default value is 100.
+/*
+SetDebouncePeriod creates the subscriber to get the debounce period.
+The default value is 100 (ms).
+This sets the period in ms in which the threshold callbacks are triggered,
+only if the threshold are being reached.
+*/
 func SetDebouncePeriod(id string, uid uint32, d *device.Debounce, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetDebouncePeriod"),
@@ -37,7 +41,7 @@ func SetDebouncePeriodFuture(brick *bricker.Bricker, connectorname string, uid u
 	return <-future
 }
 
-// GetDebouncePeriod creates the subscriber to get the debounce period.
+// GetDebouncePeriod creates the subscriber to set the debounce period.
 func GetDebouncePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "GetDebouncePeriod"),

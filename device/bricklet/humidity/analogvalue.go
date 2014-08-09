@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package analogin
+package humidity
 
 import (
 	"fmt"
@@ -11,9 +11,11 @@ import (
 	"github.com/dirkjabl/bricker/net/packet"
 )
 
-// GetAnalogValue creates A subscriber to return the raw 12-bit analog value.
-// It is only useful, if you need the full resolution of the analog-to-digital converter.
-// Please use normaly GetVoltage.
+/*
+GetAnalogValue creates A subscriber to return the raw 12-bit analog value (0 up to 4095).
+It is only useful, if you need the full resolution of the analog-to-digital converter.
+Please use normaly GetHumidity.
+*/
 func GetAnalogValue(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "GetAnalogValue"),
@@ -51,7 +53,7 @@ func GetAnalogValueFuture(brick bricker.Bricker, connectorname string, uid uint3
 AnalogValue is a type for the 12-bit analog-to-digial converter value.
 It can have values between 0 and 4095. This is the raw unfiltered analog value.
 Please see the original documentation
-http://www.tinkerforge.com/en/doc/Software/Bricklets/AnalogIn_Bricklet_TCPIP.html#advanced-functions
+http://www.tinkerforge.com/en/doc/Software/Bricklets/Humidity_Bricklet_TCPIP.html#BrickletHumidity.get_analog_value
 for more information.
 */
 type AnalogValue struct {

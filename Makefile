@@ -31,16 +31,19 @@ DIRS=\
 	device/identity\
 	device/name\
 	device/enumerate\
+	device/bricklet/ambientlight\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
 	device/bricklet/dualbutton\
 	device/bricklet/dualrelay\
+	device/bricklet/humidity\
 	device/bricklet/io16\
 	device/bricklet/io4\
 	device/bricklet/lcd20x4\
 	device/bricklet/piezobuzzer\
 	device/bricklet/piezospeaker\
-	device/bricklet/temperature
+	device/bricklet/temperature\
+	device/bricklet/tilt
 
 test.dirs: $(addsuffix .test, $(DIRS))
 deeptest.dirs: $(addsuffix .deeptest, $(DIRS))

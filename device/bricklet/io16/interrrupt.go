@@ -9,21 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // SetPortInterrupt creates the subscriber to set the interrupt bitmask for a port.
 func SetPortInterrupt(id string, uid uint32, pi *PortInterrupt, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_port_interrupt
-	spi := device.New(device.FallbackId(id, "SetPortInterrupt"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pi)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	spi.SetSubscription(sub)
-	spi.SetResult(&device.EmptyResult{})
-	spi.SetHandler(handler)
-	return spi
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetPortInterrupt"),
+		Fid:        function_set_port_interrupt,
+		Uid:        uid,
+		Data:       pi,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetPortInterruptFuture is a future pattern version for a synchronized call of the subscriber.
@@ -44,14 +41,14 @@ func SetPortInterruptFuture(brick *bricker.Bricker, connectorname string, uid ui
 
 // GetPortInterrupt creates the subscriber to get the interrupt bitmask for a port.
 func GetPortInterrupt(id string, uid uint32, po *Port, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_port_interrupt
-	gpi := device.New(device.FallbackId(id, "GetPortInterrupt"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, po)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gpi.SetSubscription(sub)
-	gpi.SetResult(&Interrupt{})
-	gpi.SetHandler(handler)
-	return gpi
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetPortInterrupt"),
+		Fid:        function_get_port_interrupt,
+		Uid:        uid,
+		Result:     &Interrupt{},
+		Data:       po,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetPortInterruptFuture is a future pattern version for a synchronized all of the subscriber.
@@ -80,13 +77,14 @@ func GetPortInterruptFuture(brick *bricker.Bricker, connectorname string, uid ui
 // This callback is triggered whenever a change of the voltage level is detected
 // on pins where the interrupt was activated with SetInterrupt.
 func InterruptTrigger(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_interrupt
-	it := device.New(device.FallbackId(id, "InterruptTrigger"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	it.SetSubscription(sub)
-	it.SetResult(&Interrupts{})
-	it.SetHandler(handler)
-	return it
+	return device.Generator{
+		Id:         device.FallbackId(id, "InterruptTrigger"),
+		Fid:        callback_interrupt,
+		Uid:        uid,
+		Result:     &Interrupts{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // PortInterrupt is a combined type.

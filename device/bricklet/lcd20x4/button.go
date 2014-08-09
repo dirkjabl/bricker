@@ -9,21 +9,19 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 // IsButtonPressed creates a subscriber to get the information, if a specific button is pressed.
 func IsButtonPressed(id string, uid uint32, button *Button, handler func(device.Resulter, error)) *device.Device {
-	fid := function_is_button_pressed
-	ibp := device.New(device.FallbackId(id, "IsButtonPressed"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, button)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ibp.SetSubscription(sub)
-	ibp.SetResult(&Pressed{})
-	ibp.SetHandler(handler)
-	return ibp
+	return device.Generator{
+		Id:         device.FallbackId(id, "IsButtonPressed"),
+		Fid:        function_is_button_pressed,
+		Uid:        uid,
+		Result:     &Pressed{},
+		Data:       button,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // IsButtonPressedFuture is a future pattern version for a synchronized call of the subscriber.
@@ -61,24 +59,26 @@ func IsButtonPressedFutureSimple(brick *bricker.Bricker, connectorname string, u
 
 // ButtonPressed creates a subscriber for the button pressed callback.
 func ButtonPressed(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_button_pressed
-	bp := device.New(device.FallbackId(id, "ButtonPressed"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	bp.SetSubscription(sub)
-	bp.SetResult(&Button{})
-	bp.SetHandler(handler)
-	return bp
+	return device.Generator{
+		Id:         device.FallbackId(id, "ButtonPressed"),
+		Fid:        callback_button_pressed,
+		Uid:        uid,
+		Result:     &Button{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // ButtonReleased creates a subscriber for the button release callback.
 func ButtonReleased(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_button_released
-	br := device.New(device.FallbackId(id, "ButtonReleased"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	br.SetSubscription(sub)
-	br.SetResult(&Button{})
-	br.SetHandler(handler)
-	return br
+	return device.Generator{
+		Id:         device.FallbackId(id, "ButtonReleased"),
+		Fid:        callback_button_released,
+		Uid:        uid,
+		Result:     &Button{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // Button type.

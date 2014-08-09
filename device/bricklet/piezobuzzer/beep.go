@@ -7,9 +7,6 @@ package piezobuzzer
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -19,14 +16,13 @@ The speaker can only approximate the frequency,
 it will play the best possible match by applying the calibration.
 */
 func Beep(id string, uid uint32, b *Beeps, handler func(device.Resulter, error)) *device.Device {
-	fid := function_beep
-	bp := device.New(device.FallbackId(id, "Beep"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, b)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	bp.SetSubscription(sub)
-	bp.SetResult(&device.EmptyResult{})
-	bp.SetHandler(handler)
-	return bp
+	return device.Generator{
+		Id:         device.FallbackId(id, "Beep"),
+		Fid:        function_beep,
+		Uid:        uid,
+		Data:       b,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // BeepFuture is a future pattern version for a synchronized call of the subscriber.
@@ -48,13 +44,13 @@ func BeepFuture(brick bricker.Bricker, connectorname string, uid uint32, b *Beep
 // BeepFinished creates a subscriber which is triggered if a Beep subscriber is finished.
 // No data are submitted.
 func BeepFinished(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_beep_finished
-	bf := device.New(device.FallbackId(id, "BeepFinished"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	bf.SetSubscription(sub)
-	bf.SetResult(&device.EmptyResult{})
-	bf.SetHandler(handler)
-	return bf
+	return device.Generator{
+		Id:         device.FallbackId(id, "BeepFinished"),
+		Fid:        callback_beep_finished,
+		Uid:        uid,
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 /*

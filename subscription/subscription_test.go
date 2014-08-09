@@ -50,8 +50,7 @@ func TestCompareHash(t *testing.T) {
 
 func TestSubscriptionString(t *testing.T) {
 	a := New(hash.ChoosenFunctionID, 1, 2, nil, true)
-	if strings.Index(a.String(), "Request-Packet:") != 60 {
-		t.Fatalf("Error TestSubscriptionString: String result not correct (%s - %d).",
-			a.String(), strings.Index(a.String(), "Request-Packet:"))
+	if strings.Index(a.String(), "Request-Packet:") == 0 {
+		t.Fatalf("Error TestSubscriptionString: String result does not contain needed content. (%s has no Request-Packet: content)", a.String())
 	}
 }

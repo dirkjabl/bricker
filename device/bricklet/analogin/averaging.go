@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -21,14 +19,13 @@ A value of 0 stops the averaging (turn off).
 This brings the data without delay but with much more noise.
 */
 func SetAveraging(id string, uid uint32, a *Average, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_averaging
-	sa := device.New(device.FallbackId(id, "SetAveraging"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, a)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sa.SetSubscription(sub)
-	sa.SetResult(&device.EmptyResult{})
-	sa.SetHandler(handler)
-	return sa
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetAveraging"),
+		Fid:        function_set_averaging,
+		Uid:        uid,
+		Data:       a,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetAveragingFuture is a future pattern version for a synchronized call of the subscriber.
@@ -49,14 +46,13 @@ func SetAveragingFuture(brick bricker.Bricker, connectorname string, uid uint32,
 
 // GetAveraging creates a subscriber to get the length of the averaging for the voltage value.
 func GetAveraging(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_averaging
-	ga := device.New(device.FallbackId(id, "GetAveraging"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ga.SetSubscription(sub)
-	ga.SetResult(&Average{})
-	ga.SetHandler(handler)
-	return ga
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetAveraging"),
+		Fid:        function_get_averaging,
+		Uid:        uid,
+		Result:     &Average{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetAveragingFuture is a future pattern version for a synchronized call of the subscriber.

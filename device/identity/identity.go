@@ -12,8 +12,6 @@ import (
 	"github.com/dirkjabl/bricker/device/name"
 	"github.com/dirkjabl/bricker/net/base58"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 const (
@@ -22,14 +20,13 @@ const (
 
 // GetIdentity creates the subscriber to get the identity of a device.
 func GetIdentity(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_identity
-	gi := device.New(device.FallbackId(id, "GetIdentity"))
-	packet := packet.NewSimpleHeaderOnly(uid, function_get_identity, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, packet, false)
-	gi.SetSubscription(sub)
-	gi.SetResult(&Identity{})
-	gi.SetHandler(handler)
-	return gi
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetIdentity"),
+		Fid:        function_get_identity,
+		Uid:        uid,
+		Result:     &Identity{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // Future is a future pattern version for a synchronized call of the subscriber.
@@ -65,27 +62,11 @@ type Identity struct {
 	DeviceIdentifer uint16
 }
 
-// IdentityFromPacket creates a identity object from a net packet.
-func IdentityFromPacket(p *packet.Packet) (*Identity, error) {
-	var i *Identity = nil
-	var err error = nil
-	if p != nil && p.Head.FunctionID == 255 {
-		i = new(Identity)
-		err = p.Payload.Decode(i)
-	} else {
-		err = device.NewDeviceError(device.ErrorUnknown)
-	}
-	return i, err
-}
-
 // FromPacket fill up the values of the identity object from a net packet.
 // Fullfill the resulter interface.
 func (i *Identity) FromPacket(p *packet.Packet) error {
-	if i == nil {
-		return device.NewDeviceError(device.ErrorNoMemoryForResult)
-	}
-	if p == nil {
-		return device.NewDeviceError(device.ErrorNoPacketToConvert)
+	if err := device.CheckForFromPacket(i, p); err != nil {
+		return err
 	}
 	return p.Payload.Decode(i)
 }
