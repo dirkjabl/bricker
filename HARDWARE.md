@@ -2,6 +2,7 @@
 
 Hardware               | Supported | All Features | All Tests
 :--------------------- | :-------: | :----------: | :-------:
+Ambient Light          |  ×        |              |  
 Analog In Bricklet     |  ×        |  ×           |  
 Analog Out Bricklet    |  ×        |  ×           |
 Dual Button Bricklet   |  ×        |  ×           |

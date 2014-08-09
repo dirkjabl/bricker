@@ -31,6 +31,7 @@ DIRS=\
 	device/identity\
 	device/name\
 	device/enumerate\
+	device/bricklet/ambientlight\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
 	device/bricklet/dualbutton\
