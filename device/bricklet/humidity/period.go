@@ -11,7 +11,7 @@ import (
 
 // SetHumidityCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
-// HumidityPeriod is only triggered if the voltage has changed since the last triggering.
+// HumidityPeriod is only triggered if the humidity has changed since the last triggering.
 func SetHumidityCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetHumidityCallbackPeriod"),
@@ -73,7 +73,7 @@ func GetHumidityCallbackPeriodFuture(brick *bricker.Bricker, connectorname strin
 
 // SetAnalogValueCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
-// AnalogValuePeriod is only triggered if the voltage has changed since the last triggering.
+// AnalogValuePeriod is only triggered if the humidity has changed since the last triggering.
 func SetAnalogValueCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetAnalogValueCallbackPeriod"),
@@ -134,7 +134,7 @@ func GetAnalogValueCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 }
 
 // HumidityPeriod creates a subscriber for the periodical humidity callback.
-// Is only triggered if the voltage changed, since last triggering.
+// Is only triggered if the humidity changed, since last triggering.
 func HumidityPeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "HumidityPeriod"),

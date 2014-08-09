@@ -73,7 +73,7 @@ func GetIlluminanceCallbackPeriodFuture(brick *bricker.Bricker, connectorname st
 
 // SetAnalogValueCallbackPeriod creates the subscriber to set the callback period.
 // Default value is 0. A value of 0 deactivates the periodical callbacks.
-// AnalogValuePeriod is only triggered if the voltage has changed since the last triggering.
+// AnalogValuePeriod is only triggered if the illuminance has changed since the last triggering.
 func SetAnalogValueCallbackPeriod(id string, uid uint32, pe *device.Period, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetAnalogValueCallbackPeriod"),
