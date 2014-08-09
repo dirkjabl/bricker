@@ -9,22 +9,19 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetDefaultText creates a new subscriber to set the default text line (for one line 0-3).
 // Here the line starts on 0 up to 19 characters (20 bytes).
 // The default text will be showed, if the default text counter timed out (look at SetDefaultTextCounter).
 func SetDefaultText(id string, uid uint32, dtl *DefaultTextLine, handler func(r device.Resulter, e error)) *device.Device {
-	fid := function_set_default_text
-	sdt := device.New(device.FallbackId(id, "SetDefaultText"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, dtl)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sdt.SetSubscription(sub)
-	sdt.SetResult(&device.EmptyResult{})
-	sdt.SetHandler(handler)
-	return sdt
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetDefaultText"),
+		Fid:        function_set_default_text,
+		Uid:        uid,
+		Data:       dtl,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetDefaultTextFuture is a future pattern version for a synchronized call of the subscriber.
@@ -46,14 +43,14 @@ func SetDefaultTextFuture(brick *bricker.Bricker, connectorname string, uid uint
 
 // GetDefaultText creates a new subscriber to get the default text on the given line.
 func GetDefaultText(id string, uid uint32, l *Line, handler func(r device.Resulter, e error)) *device.Device {
-	fid := function_get_default_text
-	gdt := device.New(device.FallbackId(id, "GetDefaultText"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, l)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gdt.SetSubscription(sub)
-	gdt.SetResult(&Text{})
-	gdt.SetHandler(handler)
-	return gdt
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetDefaultText"),
+		Fid:        function_get_default_text,
+		Uid:        uid,
+		Result:     &Text{},
+		Data:       l,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetDefaultTextFuture is a future pattern version for a synchronized call of the subscriber.
@@ -84,14 +81,13 @@ func GetDefaultTextFuture(brick *bricker.Bricker, connectorname string, uid uint
 // If the counter timed out (reaches 0) than the default text will be shown.
 // A negative value for the counter stops the timer. Default value is -1.
 func SetDefaultTextCounter(id string, uid uint32, c *Counter, handler func(r device.Resulter, e error)) *device.Device {
-	fid := function_set_default_text_counter
-	sdt := device.New(device.FallbackId(id, "SetDefaultTextCounter"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, c)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sdt.SetSubscription(sub)
-	sdt.SetResult(&device.EmptyResult{})
-	sdt.SetHandler(handler)
-	return sdt
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetDefaultTextCounter"),
+		Fid:        function_set_default_text_counter,
+		Uid:        uid,
+		Data:       c,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetDefaultTextCounterFuture is a future pattern version for a synchronized call of the subscriber.
@@ -114,14 +110,13 @@ func SetDefaultTextCounterFuture(brick *bricker.Bricker, connectorname string, u
 // GetDefaultTextCounter creates a subscriber to get the value from the counter.
 // Default value is -1.
 func GetDefaultTextCounter(id string, uid uint32, handler func(r device.Resulter, e error)) *device.Device {
-	fid := function_get_default_text
-	gdtc := device.New(device.FallbackId(id, "GetDefaultTextCounter"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gdtc.SetSubscription(sub)
-	gdtc.SetResult(&Counter{})
-	gdtc.SetHandler(handler)
-	return gdtc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetDefaultTextCounter"),
+		Fid:        function_get_default_text,
+		Uid:        uid,
+		Result:     &Counter{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetDefaultTextCounterFuture is a future pattern version for a synchronized call of the subscriber.

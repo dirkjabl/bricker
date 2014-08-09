@@ -10,8 +10,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 const (
@@ -36,14 +34,13 @@ const (
 // GetHumidity creates a subsriber to read out the humidity sensor.
 // Use the callbacks to get periodical the value.
 func GetHumidity(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_humidity
-	gh := device.New(device.FallbackId(id, "GetHumidity"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gh.SetSubscription(sub)
-	gh.SetResult(&Humidity{})
-	gh.SetHandler(handler)
-	return gh
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetHumidity"),
+		Fid:        function_get_humidity,
+		Uid:        uid,
+		Result:     &Humidity{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetHumidityFuture is a future pattern version for a synchronized calll of the subscriber.

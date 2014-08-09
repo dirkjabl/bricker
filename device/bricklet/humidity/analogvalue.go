@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -19,14 +17,13 @@ It is only useful, if you need the full resolution of the analog-to-digital conv
 Please use normaly GetHumidity.
 */
 func GetAnalogValue(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_analog_value
-	gav := device.New(device.FallbackId(id, "GetAnalogValue"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gav.SetSubscription(sub)
-	gav.SetResult(&AnalogValue{})
-	gav.SetHandler(handler)
-	return gav
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetAnalogValue"),
+		Fid:        function_get_analog_value,
+		Uid:        uid,
+		Result:     &AnalogValue{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetAnalogValueFuture is a future pattern version for a synchronized call of the subscriber.

@@ -7,22 +7,18 @@ package analogin
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetVoltageCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
 func SetVoltageCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_voltage_callback_threshold
-	svct := device.New(device.FallbackId(id, "SetVoltageCallbackThreshold"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, t)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	svct.SetSubscription(sub)
-	svct.SetResult(&device.EmptyResult{})
-	svct.SetHandler(handler)
-	return svct
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetVoltageCallbackThreshold"),
+		Fid:        function_set_voltage_callback_threshold,
+		Uid:        uid,
+		Data:       t,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetVoltageCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -43,14 +39,13 @@ func SetVoltageCallbackThresholdFuture(brick *bricker.Bricker, connectorname str
 
 // GetVoltageCallbackThreshold creates the subscriber to get the callback thresold.
 func GetVoltageCallbackThreshold(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_voltage_callback_threshold
-	gvct := device.New(device.FallbackId(id, "GetVoltageCallbackThreshold"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gvct.SetSubscription(sub)
-	gvct.SetResult(&device.Threshold{})
-	gvct.SetHandler(handler)
-	return gvct
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetVoltageCallbackThreshold"),
+		Fid:        function_get_voltage_callback_threshold,
+		Uid:        uid,
+		Result:     &device.Threshold{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetVoltageCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -78,14 +73,13 @@ func GetVoltageCallbackThresholdFuture(brick *bricker.Bricker, connectorname str
 // SetAnalogValueCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
 func SetAnalogValueCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_analog_value_callback_threshold
-	savct := device.New(device.FallbackId(id, "SetAnalogValueCallbackThreshold"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, t)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	savct.SetSubscription(sub)
-	savct.SetResult(&device.EmptyResult{})
-	savct.SetHandler(handler)
-	return savct
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetAnalogValueCallbackThreshold"),
+		Fid:        function_set_analog_value_callback_threshold,
+		Uid:        uid,
+		Data:       t,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetAnalogValueCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -106,14 +100,13 @@ func SetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname
 
 // GetAnalogValueCallbackThreshold creates the subscriber to get the callback thresold.
 func GetAnalogValueCallbackThreshold(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_analog_value_callback_threshold
-	gavct := device.New(device.FallbackId(id, "GetAnalogValueCallbackThreshold"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gavct.SetSubscription(sub)
-	gavct.SetResult(&device.Threshold{})
-	gavct.SetHandler(handler)
-	return gavct
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetAnalogValueCallbackThreshold"),
+		Fid:        function_get_analog_value_callback_threshold,
+		Uid:        uid,
+		Result:     &device.Threshold{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetAnalogValueCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
@@ -140,22 +133,24 @@ func GetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname
 
 // VoltageReached creates a subscriber for the theshold triggered voltage callback.
 func VoltageReached(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_voltage_reached
-	vp := device.New(device.FallbackId(id, "VoltageReached"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, false)
-	vp.SetSubscription(sub)
-	vp.SetResult(&Voltage{})
-	vp.SetHandler(handler)
-	return vp
+	return device.Generator{
+		Id:         device.FallbackId(id, "VoltageReached"),
+		Fid:        callback_voltage_reached,
+		Uid:        uid,
+		Result:     &Voltage{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 // AnalogValueReached creates a subscriber for the theshold triggered voltage callback.
 func AnalogValueReached(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_analog_value_reached
-	avp := device.New(device.FallbackId(id, "AnalogValueReached"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, false)
-	avp.SetSubscription(sub)
-	avp.SetResult(&AnalogValue{})
-	avp.SetHandler(handler)
-	return avp
+	return device.Generator{
+		Id:         device.FallbackId(id, "AnalogValueReached"),
+		Fid:        callback_analog_value_reached,
+		Uid:        uid,
+		Result:     &AnalogValue{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }

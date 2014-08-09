@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 /*
@@ -19,14 +17,13 @@ With auto toggle the led is switched on and off (toggle) by pressing the button.
 For setting only one led state use SetSelectedLedState.
 */
 func SetLedState(id string, uid uint32, ls *LedState, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_led_state
-	sls := device.New(device.FallbackId(id, "SetLedState"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, ls)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sls.SetSubscription(sub)
-	sls.SetResult(&device.EmptyResult{})
-	sls.SetHandler(handler)
-	return sls
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetLedState"),
+		Fid:        function_set_led_state,
+		Uid:        uid,
+		Data:       ls,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetLedStateFuture is a future pattern version for a synchronized call of the subscriber.
@@ -47,14 +44,13 @@ func SetLedStateFuture(brick *bricker.Bricker, connectorname string, uid uint32,
 
 // GetLedState creates the subscriber to get the led states.
 func GetLedState(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_led_state
-	gls := device.New(device.FallbackId(id, "GetLedState"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gls.SetSubscription(sub)
-	gls.SetResult(&LedState{})
-	gls.SetHandler(handler)
-	return gls
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetLedState"),
+		Fid:        function_get_led_state,
+		Uid:        uid,
+		Result:     &LedState{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetLedStateFuture is a future pattern version for a synchronized all of the subscriber.
@@ -82,14 +78,13 @@ func GetLedStateFuture(brick *bricker.Bricker, connectorname string, uid uint32)
 // SetSelectedLedState creates a subscriber for setting a selected led state.
 // The other led stays untouched.
 func SetSelectedLedState(id string, uid uint32, sls *SelectedLedState, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_selected_led_state
-	ssls := device.New(device.FallbackId(id, "SetSelectedLedState"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, sls)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ssls.SetSubscription(sub)
-	ssls.SetResult(&device.EmptyResult{})
-	ssls.SetHandler(handler)
-	return ssls
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetSelectedLedState"),
+		Fid:        function_set_selected_led_state,
+		Uid:        uid,
+		Data:       sls,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetSelectedLedStateFuture is a future pattern version for a synchronized call of the subscriber.
@@ -111,13 +106,14 @@ func SetSelectedLedStateFuture(brick *bricker.Bricker, connectorname string, uid
 // StateChanged creates a subscriber for the state changed callback.
 // This callback is triggered whenever a button is pressed.
 func StateChanged(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := callback_state_changed
-	sc := device.New(device.FallbackId(id, "InterruptTrigger"))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, nil, true)
-	sc.SetSubscription(sub)
-	sc.SetResult(&States{})
-	sc.SetHandler(handler)
-	return sc
+	return device.Generator{
+		Id:         device.FallbackId(id, "InterruptTrigger"),
+		Fid:        callback_state_changed,
+		Uid:        uid,
+		Result:     &States{},
+		Handler:    handler,
+		IsCallback: true,
+		WithPacket: false}.CreateDevice()
 }
 
 /*

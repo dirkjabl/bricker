@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -19,14 +17,13 @@ import (
 // Port coult be 'a' or 'b'.
 // If the direction is configured as input, the value is either pull-up or default (set as true or false).
 func SetPortConfiguration(id string, uid uint32, c *Configuration, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_port_configuration
-	spc := device.New(device.FallbackId(id, "SetPortConfiguration"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewConfigurationRaw(c))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	spc.SetSubscription(sub)
-	spc.SetResult(&device.EmptyResult{})
-	spc.SetHandler(handler)
-	return spc
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetPortConfiguration"),
+		Fid:        function_set_port_configuration,
+		Uid:        uid,
+		Data:       NewConfigurationRaw(c),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetPortConfigurationFuture is a future pattern version for a synchronized call of the subscriber.
@@ -49,14 +46,14 @@ func SetPortConfigurationFuture(brick *bricker.Bricker, connectorname string, ui
 // Returns a value bitmask and a direction bitmask.
 // A 1 in the direction bitmask means input and a 0 in the bitmask means output.
 func GetPortConfiguration(id string, uid uint32, po *Port, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_port_configuration
-	gpc := device.New(device.FallbackId(id, "GetPortConfiguration"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, po)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gpc.SetSubscription(sub)
-	gpc.SetResult(&Configurations{})
-	gpc.SetHandler(handler)
-	return gpc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetPortConfiguration"),
+		Fid:        function_get_port_configuration,
+		Uid:        uid,
+		Result:     &Configurations{},
+		Data:       po,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetPortConfigurationFuture is a future pattern version for a synchronized all of the subscriber.

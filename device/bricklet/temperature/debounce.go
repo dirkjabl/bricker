@@ -7,22 +7,18 @@ package temperature
 import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
-	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // SetDebouncePeriod creates the subscriber to get the debounce period.
 // The default value is 100.
 func SetDebouncePeriod(id string, uid uint32, d *device.Debounce, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_debounce_period
-	sdp := device.New(device.FallbackId(id, "SetDebouncePeriod"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, d)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sdp.SetSubscription(sub)
-	sdp.SetResult(&device.EmptyResult{})
-	sdp.SetHandler(handler)
-	return sdp
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetDebouncePeriod"),
+		Fid:        function_set_debounce_period,
+		Uid:        uid,
+		Data:       d,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetDebouncePeriodFuture is a future pattern version for a synchronized call of the subscriber.
@@ -43,14 +39,13 @@ func SetDebouncePeriodFuture(brick *bricker.Bricker, connectorname string, uid u
 
 // GetDebouncePeriod creates the subscriber to set the debounce period.
 func GetDebouncePeriod(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_debounce_period
-	gdp := device.New(device.FallbackId(id, "GetDebouncePeriod"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gdp.SetSubscription(sub)
-	gdp.SetResult(&device.Debounce{})
-	gdp.SetHandler(handler)
-	return gdp
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetDebouncePeriod"),
+		Fid:        function_get_debounce_period,
+		Uid:        uid,
+		Result:     &device.Debounce{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetDebouncePeriodFuture is a future pattern version for a synchronized all of the subscriber.

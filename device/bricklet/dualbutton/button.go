@@ -9,20 +9,17 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // GetButtonState creates a subscriber to get the button states.
 func GetButtonState(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_button_state
-	gbs := device.New(device.FallbackId(id, "GetButtonState"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gbs.SetSubscription(sub)
-	gbs.SetResult(&ButtonState{})
-	gbs.SetHandler(handler)
-	return gbs
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetButtonState"),
+		Fid:        function_get_button_state,
+		Uid:        uid,
+		Result:     &ButtonState{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetButtonStateFuture is a future pattern version for a synchronized all of the subscriber.

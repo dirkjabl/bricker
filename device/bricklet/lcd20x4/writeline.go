@@ -9,20 +9,17 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 )
 
 // WriteLine creates a new subscriber to write a text to the LCD (one line).
 func WriteLine(id string, uid uint32, ltl *LcdTextLine, handler func(r device.Resulter, e error)) *device.Device {
-	fid := function_write_line
-	wl := device.New(device.FallbackId(id, "WriteLine"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, ltl)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	wl.SetSubscription(sub)
-	wl.SetResult(&device.EmptyResult{})
-	wl.SetHandler(handler)
-	return wl
+	return device.Generator{
+		Id:         device.FallbackId(id, "WriteLine"),
+		Fid:        function_write_line,
+		Uid:        uid,
+		Data:       ltl,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // WriteLineFuture is a future pattern version for a synchronized call of the subscriber.

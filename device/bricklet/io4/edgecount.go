@@ -9,20 +9,18 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
 func GetEdgeCount(id string, uid uint32, ec *EdgeCount, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_edge_count
-	gec := device.New(device.FallbackId(id, "GetEdgeCount"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, NewEdgeCountRaw(ec))
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gec.SetSubscription(sub)
-	gec.SetResult(&EdgeCounts{})
-	gec.SetHandler(handler)
-	return gec
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetEdgeCount"),
+		Fid:        function_get_edge_count,
+		Uid:        uid,
+		Result:     &EdgeCounts{},
+		Data:       NewEdgeCountRaw(ec),
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetEdgeCountFuture is a future pattern version for a synchronized all of the subscriber.
@@ -52,14 +50,13 @@ func GetEdgeCountFuture(brick *bricker.Bricker, connectorname string, uid uint32
 // Configuring an edge counter resets its value to 0..
 // Default edge type is 0 (rising).
 func SetEdgeCountConfig(id string, uid uint32, e *SelectedEdgeCountConfig, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_edge_count_config
-	secc := device.New(device.FallbackId(id, "SetEdgeCountConfig"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, e)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	secc.SetSubscription(sub)
-	secc.SetResult(&device.EmptyResult{})
-	secc.SetHandler(handler)
-	return secc
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetEdgeCountConfig"),
+		Fid:        function_set_edge_count_config,
+		Uid:        uid,
+		Data:       e,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetEdgeCountConfigFuture is a future pattern version for a synchronized call of the subscriber.
@@ -80,14 +77,14 @@ func SetEdgeCountConfigFuture(brick *bricker.Bricker, connectorname string, uid 
 
 // GetEdgeCountConfig creates a subscriber for getting the actual edge count configurations.
 func GetEdgeCountConfig(id string, uid uint32, pin *Pin, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_edge_count_config
-	gecc := device.New(device.FallbackId(id, "GetEdgeCountConfig"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, pin)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gecc.SetSubscription(sub)
-	gecc.SetResult(&EdgeCountConfig{})
-	gecc.SetHandler(handler)
-	return gecc
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetEdgeCountConfig"),
+		Fid:        function_get_edge_count_config,
+		Uid:        uid,
+		Result:     &EdgeCountConfig{},
+		Data:       pin,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetEdgeCountConfigFuture is a future pattern version for a synchronized all of the subscriber.

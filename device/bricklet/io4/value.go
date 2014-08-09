@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -21,14 +19,13 @@ import (
 // This function does nothing for pins that are configured as input.
 // Pull-up resistors can be switched on with SetConfiguration.
 func SetValue(id string, uid uint32, v *Value, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_value
-	sv := device.New(device.FallbackId(id, "SetValue"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, v)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	sv.SetSubscription(sub)
-	sv.SetResult(&device.EmptyResult{})
-	sv.SetHandler(handler)
-	return sv
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetValue"),
+		Fid:        function_set_value,
+		Uid:        uid,
+		Data:       v,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetValueFuture is a future pattern version for a synchronized call of the subscriber.
@@ -49,14 +46,13 @@ func SetValueFuture(brick *bricker.Bricker, connectorname string, uid uint32, v 
 
 // GetValue creates the subscriber to get the output value.
 func GetValue(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_get_value
-	gv := device.New(device.FallbackId(id, "GetValue"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	gv.SetSubscription(sub)
-	gv.SetResult(&Value{})
-	gv.SetHandler(handler)
-	return gv
+	return device.Generator{
+		Id:         device.FallbackId(id, "GetValue"),
+		Fid:        function_get_value,
+		Uid:        uid,
+		Result:     &Value{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // GetValueFuture is a future pattern version for a synchronized all of the subscriber.
@@ -85,14 +81,13 @@ func GetValueFuture(brick *bricker.Bricker, connectorname string, uid uint32) *V
 // This function does nothing for pins that are configured as input.
 // Pull-up resistors can be switched on with set_configuration.
 func SetSelectedValues(id string, uid uint32, v *Values, handler func(device.Resulter, error)) *device.Device {
-	fid := function_set_selected_values
-	ssv := device.New(device.FallbackId(id, "SetSelectedValues"))
-	p := packet.NewSimpleHeaderPayload(uid, fid, true, v)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	ssv.SetSubscription(sub)
-	ssv.SetResult(&device.EmptyResult{})
-	ssv.SetHandler(handler)
-	return ssv
+	return device.Generator{
+		Id:         device.FallbackId(id, "SetSelectedValues"),
+		Fid:        function_set_selected_values,
+		Uid:        uid,
+		Data:       v,
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // SetSelectedValuesFuture is a future pattern version for a synchronized call of the subscriber.

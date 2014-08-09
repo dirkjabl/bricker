@@ -9,8 +9,6 @@ import (
 	"github.com/dirkjabl/bricker"
 	"github.com/dirkjabl/bricker/device"
 	"github.com/dirkjabl/bricker/net/packet"
-	"github.com/dirkjabl/bricker/subscription"
-	"github.com/dirkjabl/bricker/util/hash"
 	misc "github.com/dirkjabl/bricker/util/miscellaneous"
 )
 
@@ -25,14 +23,13 @@ This mapping is stored in the EEPROM and loaded on startup.
 The callback result is true after calibration.
 */
 func Calibrate(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
-	fid := function_calibrate
-	c := device.New(device.FallbackId(id, "Calibrate"))
-	p := packet.NewSimpleHeaderOnly(uid, fid, true)
-	sub := subscription.New(hash.ChoosenFunctionIDUid, uid, fid, p, false)
-	c.SetSubscription(sub)
-	c.SetResult(&Calibration{})
-	c.SetHandler(handler)
-	return c
+	return device.Generator{
+		Id:         device.FallbackId(id, "Calibrate"),
+		Fid:        function_calibrate,
+		Uid:        uid,
+		Result:     &Calibration{},
+		Handler:    handler,
+		WithPacket: true}.CreateDevice()
 }
 
 // CalibrateFuture is a future pattern version for a synchronized call of the subscriber.
