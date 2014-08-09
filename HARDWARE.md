@@ -11,6 +11,7 @@ Humidity               |  ×        |  ×           |
 IO-16 Bricklet         |  ×        |  ×           |
 IO-4 Bricklet          |  ×        |  ×           |
 LCD 20x4 Bricklet      |  ×        |  ×           |
+Moisture Bricklet      |  ×        |              |
 Piezo Buzzer Bricklet  |  ×        |  ×           |
 Piezo Speaker Bricklet |  ×        |  ×           |
 Temperature Bricklet   |  ×        |  ×           |
