@@ -1,5 +1,11 @@
 # Changelog
 
+### prealpha.4
+
+More bricklets supported (Ambient Light, Tilt, Humidity). 
+Simpler and better readable generation of subscriber implemented.
+Some fixes.
+
 ### prealpha.3
 
 More bricklets supported (IO-16, Dual Button).
