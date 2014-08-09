@@ -4,6 +4,13 @@
 
 package ambientlight
 
+import (
+	"fmt"
+	"github.com/dirkjabl/bricker"
+	"github.com/dirkjabl/bricker/device"
+	"github.com/dirkjabl/bricker/net/packet"
+)
+
 func GetIlluminance(id string, uid uint32, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "GetIlluminance"),
@@ -19,7 +26,7 @@ func GetIlluminance(id string, uid uint32, handler func(device.Resulter, error))
 func GetIlluminanceFuture(brick *bricker.Bricker, connectorname string, uid uint32) *Illuminance {
 	future := make(chan *Illuminance)
 	defer close(future)
-	sub := GetHumidity("getilluminancefuture"+device.GenId(), uid,
+	sub := GetIlluminance("getilluminancefuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
 			var v *Illuminance = nil
 			if err == nil {
@@ -68,8 +75,8 @@ func (i *Illuminance) Float64() float64 {
 	return f
 }
 
-// Float32 converts the illuminance value from int16 to float64.
-func (i *Illuminance) Float32() float64 {
+// Float32 converts the illuminance value from int16 to float32.
+func (i *Illuminance) Float32() float32 {
 	f := float32(i.Value) / 10.00
 	return f
 }
