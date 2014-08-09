@@ -88,7 +88,7 @@ func (h *Humidity) String() string {
 	if h == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("[Value: %d, Humidity: %02.02f %RH]", h.Value, h.Float64())
+		txt += fmt.Sprintf("[Value: %d, Humidity: %03.02f %RH]", h.Value, h.Float64())
 	}
 	return txt
 }
