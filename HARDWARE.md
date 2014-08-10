@@ -5,6 +5,7 @@ Hardware               | Supported | All Features | All Tests
 Ambient Light          |  ×        |  ×           |  
 Analog In Bricklet     |  ×        |  ×           |  
 Analog Out Bricklet    |  ×        |  ×           |
+Barometer Bricklet     |  ×        |              |
 Dual Button Bricklet   |  ×        |  ×           |
 Dual Relay Bricklet    |  ×        |  ×           |
 Humidity               |  ×        |  ×           |

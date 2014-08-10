@@ -34,6 +34,7 @@ DIRS=\
 	device/bricklet/ambientlight\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
+	device/bricklet/barometer\
 	device/bricklet/dualbutton\
 	device/bricklet/dualrelay\
 	device/bricklet/humidity\
