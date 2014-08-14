@@ -11,6 +11,7 @@ var devicenames = map[uint16]string{
 	14:  "Brick Servo",
 	15:  "Brick Stepper",
 	16:  "Brick IMU",
+	17:  "Brick RED",
 	21:  "Bricklet Ambient Light",
 	23:  "Bricklet Current12",
 	24:  "Bricklet Current25",
