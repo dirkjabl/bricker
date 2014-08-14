@@ -1,5 +1,11 @@
 # Changelog
 
+### prealpha.5
+
+More bricklets supported (Barometer, Moisture, Motion Detector).
+Threshold implementation splitted in a 16bit and 32bit version of the type.
+Some fixes.
+
 ### prealpha.4
 
 More bricklets supported (Ambient Light, Tilt, Humidity). 
