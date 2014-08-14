@@ -4,11 +4,6 @@
 
 package device
 
-import (
-	"fmt"
-	"github.com/dirkjabl/bricker/net/packet"
-)
-
 // Threshold states.
 const (
 	ThresholdTurnedOff  = 'x'
@@ -18,24 +13,9 @@ const (
 	ThresholdBiggerMin  = '>'
 )
 
-// Threshold type.
-type Threshold struct {
-	Option byte
-	Min    int16
-	Max    int16
-}
-
-// FromPacket convert the packet payload to the theshold type.
-func (t *Threshold) FromPacket(p *packet.Packet) error {
-	if err := CheckForFromPacket(t, p); err != nil {
-		return err
-	}
-	return p.Payload.Decode(t)
-}
-
-// Name convert the threshold option to a readable string.
-func (t *Threshold) Name() string {
-	switch t.Option {
+// ThresholdName give back a string representation of the threshold option.
+func ThresholdName(option byte) string {
+	switch option {
 	case ThresholdTurnedOff:
 		return "Threshold Callback is turned off"
 	case ThresholdOutside:
@@ -49,19 +29,4 @@ func (t *Threshold) Name() string {
 	default:
 		return "Unknown"
 	}
-}
-
-// String fullfill the stringer interface.
-func (t *Threshold) String() string {
-	txt := "Threshold "
-	if t == nil {
-		return txt + "[nil]"
-	}
-	txt += "[Option: " + t.Name()
-	if t.Option == ThresholdOutside || t.Option == ThresholdInside {
-		txt += fmt.Sprintf(", Min: %d, Max: %d", t.Min, t.Max)
-	} else if t.Option == ThresholdBiggerMin || t.Option == ThresholdSmallerMin {
-		txt += fmt.Sprintf(", Min: %d", t.Min)
-	}
-	return txt + "]"
 }
