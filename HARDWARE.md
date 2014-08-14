@@ -13,7 +13,7 @@ IO-16 Bricklet           |  ×        |  ×           |
 IO-4 Bricklet            |  ×        |  ×           |
 LCD 20x4 Bricklet        |  ×        |  ×           |
 Moisture Bricklet        |  ×        |  ×           |
-Motion Detector Bricklet |  ×        |              |
+Motion Detector Bricklet |  ×        |  ×           |
 Piezo Buzzer Bricklet    |  ×        |  ×           |
 Piezo Speaker Bricklet   |  ×        |  ×           |
 Temperature Bricklet     |  ×        |  ×           |
