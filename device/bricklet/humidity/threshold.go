@@ -11,7 +11,7 @@ import (
 
 // SetHumidityCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
-func SetHumidityCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
+func SetHumidityCallbackThreshold(id string, uid uint32, t *device.Threshold16, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetHumidityCallbackThreshold"),
 		Fid:        function_set_humidity_callback_threshold,
@@ -23,7 +23,7 @@ func SetHumidityCallbackThreshold(id string, uid uint32, t *device.Threshold, ha
 
 // SetHumidityCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
+func SetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold16) bool {
 	future := make(chan bool)
 	defer close(future)
 	sub := SetHumidityCallbackThreshold("sethumiditycallbackthresholdfuture"+device.GenId(), uid, t,
@@ -43,21 +43,21 @@ func GetHumidityCallbackThreshold(id string, uid uint32, handler func(device.Res
 		Id:         device.FallbackId(id, "GetHumidityCallbackThreshold"),
 		Fid:        function_get_humidity_callback_threshold,
 		Uid:        uid,
-		Result:     &device.Threshold{},
+		Result:     &device.Threshold16{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
 // GetHumidityCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is nil.
-func GetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
-	future := make(chan *device.Threshold)
+func GetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold16 {
+	future := make(chan *device.Threshold16)
 	defer close(future)
 	sub := GetHumidityCallbackThreshold("gethumiditycallbackthresholdfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
-			var v *device.Threshold = nil
+			var v *device.Threshold16 = nil
 			if err == nil {
-				if value, ok := r.(*device.Threshold); ok {
+				if value, ok := r.(*device.Threshold16); ok {
 					v = value
 				}
 			}
@@ -72,7 +72,7 @@ func GetHumidityCallbackThresholdFuture(brick *bricker.Bricker, connectorname st
 
 // SetAnalogValueCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
-func SetAnalogValueCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
+func SetAnalogValueCallbackThreshold(id string, uid uint32, t *device.Threshold16, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetAnalogValueCallbackThreshold"),
 		Fid:        function_set_analog_value_callback_threshold,
@@ -84,7 +84,7 @@ func SetAnalogValueCallbackThreshold(id string, uid uint32, t *device.Threshold,
 
 // SetAnalogValueCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
+func SetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold16) bool {
 	future := make(chan bool)
 	defer close(future)
 	sub := SetAnalogValueCallbackThreshold("setanalogvaluecallbackthresholdfuture"+device.GenId(), uid, t,
@@ -104,21 +104,21 @@ func GetAnalogValueCallbackThreshold(id string, uid uint32, handler func(device.
 		Id:         device.FallbackId(id, "GetAnalogValueCallbackThreshold"),
 		Fid:        function_get_analog_value_callback_threshold,
 		Uid:        uid,
-		Result:     &device.Threshold{},
+		Result:     &device.Threshold16{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
 // GetAnalogValueCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is nil.
-func GetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
-	future := make(chan *device.Threshold)
+func GetAnalogValueCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold16 {
+	future := make(chan *device.Threshold16)
 	defer close(future)
 	sub := GetAnalogValueCallbackThreshold("getanalogvaluecallbackthresholdfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
-			var v *device.Threshold = nil
+			var v *device.Threshold16 = nil
 			if err == nil {
-				if value, ok := r.(*device.Threshold); ok {
+				if value, ok := r.(*device.Threshold16); ok {
 					v = value
 				}
 			}

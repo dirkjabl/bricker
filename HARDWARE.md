@@ -1,20 +1,23 @@
 # Supported bricks and bricklets
 
-Hardware               | Supported | All Features | All Tests
-:--------------------- | :-------: | :----------: | :-------:
-Ambient Light          |  ×        |  ×           |  
-Analog In Bricklet     |  ×        |  ×           |  
-Analog Out Bricklet    |  ×        |  ×           |
-Dual Button Bricklet   |  ×        |  ×           |
-Dual Relay Bricklet    |  ×        |  ×           |
-Humidity               |  ×        |  ×           |
-IO-16 Bricklet         |  ×        |  ×           |
-IO-4 Bricklet          |  ×        |  ×           |
-LCD 20x4 Bricklet      |  ×        |  ×           |
-Piezo Buzzer Bricklet  |  ×        |  ×           |
-Piezo Speaker Bricklet |  ×        |  ×           |
-Temperature Bricklet   |  ×        |  ×           |
-Tilt Bricklet          |  ×        |  ×           |
+Hardware                 | Supported | All Features | All Tests
+:----------------------- | :-------: | :----------: | :-------:
+Ambient Light            |  ×        |  ×           |  
+Analog In Bricklet       |  ×        |  ×           |  
+Analog Out Bricklet      |  ×        |  ×           |
+Barometer Bricklet       |  ×        |  ×           |
+Dual Button Bricklet     |  ×        |  ×           |
+Dual Relay Bricklet      |  ×        |  ×           |
+Humidity                 |  ×        |  ×           |
+IO-16 Bricklet           |  ×        |  ×           |
+IO-4 Bricklet            |  ×        |  ×           |
+LCD 20x4 Bricklet        |  ×        |  ×           |
+Moisture Bricklet        |  ×        |  ×           |
+Motion Detector Bricklet |  ×        |  ×           |
+Piezo Buzzer Bricklet    |  ×        |  ×           |
+Piezo Speaker Bricklet   |  ×        |  ×           |
+Temperature Bricklet     |  ×        |  ×           |
+Tilt Bricklet            |  ×        |  ×           |
 
 
 ## Legend

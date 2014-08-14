@@ -34,12 +34,15 @@ DIRS=\
 	device/bricklet/ambientlight\
 	device/bricklet/analogin\
 	device/bricklet/analogout\
+	device/bricklet/barometer\
 	device/bricklet/dualbutton\
 	device/bricklet/dualrelay\
 	device/bricklet/humidity\
 	device/bricklet/io16\
 	device/bricklet/io4\
 	device/bricklet/lcd20x4\
+	device/bricklet/moisture\
+	device/bricklet/motiondetector\
 	device/bricklet/piezobuzzer\
 	device/bricklet/piezospeaker\
 	device/bricklet/temperature\
