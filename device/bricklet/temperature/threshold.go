@@ -11,7 +11,7 @@ import (
 
 // SetTemperatureCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
-func SetTemperatureCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
+func SetTemperatureCallbackThreshold(id string, uid uint32, t *device.Threshold16, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetTemperatureCallbackThreshold"),
 		Fid:        function_set_temperature_callback_threshold,
@@ -23,7 +23,7 @@ func SetTemperatureCallbackThreshold(id string, uid uint32, t *device.Threshold,
 
 // SetTemperatureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
+func SetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold16) bool {
 	future := make(chan bool)
 	defer close(future)
 	sub := SetTemperatureCallbackThreshold("settemperaturecallbackthresholdfuture"+device.GenId(), uid, t,
@@ -43,21 +43,21 @@ func GetTemperatureCallbackThreshold(id string, uid uint32, handler func(device.
 		Id:         device.FallbackId(id, "GetTemperatureCallbackThreshold"),
 		Fid:        function_get_temperature_callback_threshold,
 		Uid:        uid,
-		Result:     &device.Threshold{},
+		Result:     &device.Threshold16{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
 // GetTemperatureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is nil.
-func GetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
-	future := make(chan *device.Threshold)
+func GetTemperatureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold16 {
+	future := make(chan *device.Threshold16)
 	defer close(future)
 	sub := GetTemperatureCallbackThreshold("gettemperaturecallbackthresholdfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
-			var v *device.Threshold = nil
+			var v *device.Threshold16 = nil
 			if err == nil {
-				if value, ok := r.(*device.Threshold); ok {
+				if value, ok := r.(*device.Threshold16); ok {
 					v = value
 				}
 			}

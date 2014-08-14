@@ -11,7 +11,7 @@ import (
 
 // SetMoistureCallbackThreshold creates the subscriber to set the callback thresold.
 // Default value is ('x', 0, 0).
-func SetMoistureCallbackThreshold(id string, uid uint32, t *device.Threshold, handler func(device.Resulter, error)) *device.Device {
+func SetMoistureCallbackThreshold(id string, uid uint32, t *device.Threshold16, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
 		Id:         device.FallbackId(id, "SetMoistureCallbackThreshold"),
 		Fid:        function_set_moisture_callback_threshold,
@@ -23,7 +23,7 @@ func SetMoistureCallbackThreshold(id string, uid uint32, t *device.Threshold, ha
 
 // SetTemperatureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is false.
-func SetMoistureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold) bool {
+func SetMoistureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32, t *device.Threshold16) bool {
 	future := make(chan bool)
 	defer close(future)
 	sub := SetMoistureCallbackThreshold("setmoisturecallbackthresholdfuture"+device.GenId(), uid, t,
@@ -43,21 +43,21 @@ func GetMoistureCallbackThreshold(id string, uid uint32, handler func(device.Res
 		Id:         device.FallbackId(id, "GetMoistureCallbackThreshold"),
 		Fid:        function_get_moisture_callback_threshold,
 		Uid:        uid,
-		Result:     &device.Threshold{},
+		Result:     &device.Threshold16{},
 		Handler:    handler,
 		WithPacket: true}.CreateDevice()
 }
 
 // GetMoistureCallbackThresholdFuture is a future pattern version for a synchronized call of the subscriber.
 // If an error occur, the result is nil.
-func GetMoistureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold {
-	future := make(chan *device.Threshold)
+func GetMoistureCallbackThresholdFuture(brick *bricker.Bricker, connectorname string, uid uint32) *device.Threshold16 {
+	future := make(chan *device.Threshold16)
 	defer close(future)
 	sub := GetMoistureCallbackThreshold("getmoisturecallbackthresholdfuture"+device.GenId(), uid,
 		func(r device.Resulter, err error) {
-			var v *device.Threshold = nil
+			var v *device.Threshold16 = nil
 			if err == nil {
-				if value, ok := r.(*device.Threshold); ok {
+				if value, ok := r.(*device.Threshold16); ok {
 					v = value
 				}
 			}
