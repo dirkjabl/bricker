@@ -42,6 +42,7 @@ DIRS=\
 	device/bricklet/io4\
 	device/bricklet/lcd20x4\
 	device/bricklet/moisture\
+	device/bricklet/motiondetector\
 	device/bricklet/piezobuzzer\
 	device/bricklet/piezospeaker\
 	device/bricklet/temperature\
