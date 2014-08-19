@@ -114,12 +114,15 @@ func (p *Payload) Encode(r interface{}) error {
 
 // String fullfill the stringer interface for the payload of a packet.
 func (p *Payload) String() string {
-	txt := ""
+	txt := "Payload "
 	if p == nil {
-		return "<nil>"
+		txt += "[nil]"
+	} else {
+		txt += "[ "
+		for _, v := range *p {
+			txt += fmt.Sprintf("0x%02x ", v)
+		}
+		txt += "]"
 	}
-	for _, v := range *p {
-		txt += fmt.Sprintf("0x%02x ", v)
-	}
-	return "Payload: [ " + txt + "]"
+	return txt
 }
