@@ -10,6 +10,7 @@ const (
 	ErrorNotMatchingSubscription
 	ErrorNoMemoryForResult
 	ErrorNoPacketToConvert
+	ErrorNoEvent
 )
 
 // Error type for encoding or decoding packets for devices like bricks or bricklets.
@@ -32,7 +33,9 @@ func (e DeviceError) Error() string {
 	case ErrorNoMemoryForResult:
 		return "No memory for the result values."
 	case ErrorNoPacketToConvert:
-		return "No packet for converting."
+		return "No packet for converting or notify."
+	case ErrorNoEvent:
+		return "No event for converting or notify."
 	case ErrorUnknown:
 		fallthrough
 	default:

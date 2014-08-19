@@ -114,6 +114,13 @@ func FallbackId(id, fb string) string {
 // The handler routine (callback or event listner) gets only an error value.
 // The result of the event is in the resulter value of the device.
 func (d *Device) Notify(e *event.Event) {
+	if d == nil {
+		return
+	}
+	if e == nil {
+		d.Handler()(nil, NewDeviceError(ErrorNoEvent))
+		return
+	}
 	var err error = e.Err
 	if e.Packet != nil && e.Err == nil && e.Packet.Head.FunctionID == d.Subscription().FunctionID {
 		err = d.Result().FromPacket(e.Packet)
