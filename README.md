@@ -28,7 +28,7 @@ For the actual supportet bricks and bricklets please refer the HARDWARE.md file.
 
 ## Examples
 
-You could find examples in the [examples repoitory](github.com/dirkjabl/examples/tree/master/bricker).
+You could find examples in the [examples repository](https://github.com/dirkjabl/examples/tree/master/bricker).
 
 The typical structure for an application with the bricker starts with the
 creation of a bricker object
