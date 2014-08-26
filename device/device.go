@@ -124,7 +124,7 @@ func (d *Device) Notify(e *event.Event) {
 	var err error = e.Err
 	if e.Packet != nil && e.Err == nil && e.Packet.Head.FunctionID == d.Subscription().FunctionID {
 		err = d.Result().FromPacket(e.Packet)
-		d.Handler()(d.Result(), err)
+		d.Handler()(d.Result().Copy(), err)
 	} else {
 		if err == nil {
 			err = NewDeviceError(ErrorNotMatchingSubscription)
