@@ -51,6 +51,11 @@ func (er *EmptyResult) String() string {
 	return "EmptyResult []"
 }
 
+// Copy creates new EmptyResult, it needs not to copy.
+func (er *EmptyResult) Copy() Resulter {
+	return &EmptyResult{}
+}
+
 // IsEmptyResultOk checks if an error occur by an empty result
 func IsEmptyResultOk(r Resulter, e error) bool {
 	var v bool = false
