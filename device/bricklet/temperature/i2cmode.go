@@ -16,11 +16,6 @@ const (
 	I2CModeSlow = 1 // 100kHz
 )
 
-// I2C mode type.
-type I2CMode struct {
-	Value uint8
-}
-
 // SetI2CMode creates the subscriber to set the I2C mode.
 func SetI2CMode(id string, uid uint32, m *I2CMode, handler func(device.Resulter, error)) *device.Device {
 	return device.Generator{
@@ -81,6 +76,11 @@ func GetI2CModeFuture(brick *bricker.Bricker, connectorname string, uid uint32) 
 	return <-future
 }
 
+// I2C mode type.
+type I2CMode struct {
+	Value uint8
+}
+
 // FromPacket converts from packet to Mode.
 func (m *I2CMode) FromPacket(p *packet.Packet) error {
 	if err := device.CheckForFromPacket(m, p); err != nil {
@@ -104,4 +104,12 @@ func (m *I2CMode) Name() string {
 // String fullfill the stringer interface.
 func (m *I2CMode) String() string {
 	return fmt.Sprintf("I2C Mode [Value: %d Name: %s]", m.Value, m.Name())
+}
+
+// Copy creates a copy of the content.
+func (m *I2CMode) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &I2CMode{Value: m.Value}
 }

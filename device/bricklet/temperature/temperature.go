@@ -91,7 +91,15 @@ func (t *Temperature) String() string {
 	if t == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("[Value: %d, Temperature: %02.02f°C]", t.Value, t.Float64())
+		txt += fmt.Sprintf("[Value: %d, Temperature: %5.2f°C]", t.Value, t.Float64())
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (t *Temperature) Copy() device.Resulter {
+	if t == nil {
+		return nil
+	}
+	return &Temperature{Value: t.Value}
 }

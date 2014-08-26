@@ -93,6 +93,14 @@ func (h *Humidity) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (h *Humidity) Copy() device.Resulter {
+	if h == nil {
+		return nil
+	}
+	return &Humidity{Value: h.Value}
+}
+
 // Float64 converts the humidity value from int16 to float64.
 func (h *Humidity) Float64() float64 {
 	f := float64(h.Value) / 10.00

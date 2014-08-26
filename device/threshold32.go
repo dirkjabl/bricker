@@ -46,3 +46,14 @@ func (t *Threshold32) String() string {
 	}
 	return txt + "]"
 }
+
+// Copy creates a copy of the content.
+func (t *Threshold32) Copy() Resulter {
+	if t == nil {
+		return nil
+	}
+	return &Threshold32{
+		Option: t.Option,
+		Min:    t.Min,
+		Max:    t.Max}
+}

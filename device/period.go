@@ -26,3 +26,11 @@ func (pe *Period) FromPacket(p *packet.Packet) error {
 func (p *Period) String() string {
 	return fmt.Sprintf("Period [%d ms]", p.Value)
 }
+
+// Copy creates a copy of the content.
+func (p *Period) Copy() Resulter {
+	if p == nil {
+		return nil
+	}
+	return &Period{Value: p.Value}
+}

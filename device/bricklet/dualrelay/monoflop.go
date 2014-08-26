@@ -144,6 +144,17 @@ func (m *Monoflop) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (m *Monoflop) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Monoflop{
+		State:         m.State,
+		Time:          m.Time,
+		TimeRemaining: m.TimeRemaining}
+}
+
 // FromMonoflopRaw converts a en/decoding type MonoflopRaw into Monoflop.
 func (m *Monoflop) FromMonoflopRaw(mr *MonoflopRaw) {
 	if m == nil || mr == nil {
@@ -192,6 +203,16 @@ func (v *Value) FromValueRaw(vr *ValueRaw) {
 	}
 	v.Relay = vr.Relay
 	v.State = misc.Uint8ToBool(vr.State)
+}
+
+// Copy creates a copy of the content.
+func (v *Value) Copy() device.Resulter {
+	if v == nil {
+		return nil
+	}
+	return &Value{
+		Relay: v.Relay,
+		State: v.State}
 }
 
 // String fullfill the stringer interface.

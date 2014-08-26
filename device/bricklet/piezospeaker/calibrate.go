@@ -101,6 +101,14 @@ func (c *Calibration) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (c *Calibration) Copy() device.Resulter {
+	if c == nil {
+		return nil
+	}
+	return &Calibration{Done: c.Done}
+}
+
 // CalibrationRaw is the real de/encoding type for a Calibration type.
 type CalibrationRaw struct {
 	Done uint8

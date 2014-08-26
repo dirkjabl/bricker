@@ -128,6 +128,14 @@ func (bl *Backlight) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (bl *Backlight) Copy() device.Resulter {
+	if bl == nil {
+		return nil
+	}
+	return &Backlight{IsOn: bl.IsOn}
+}
+
 // FromBacklightRaw converts a BacklightRaw into a Backlight.
 func (bl *Backlight) FromBacklightRaw(br *BacklightRaw) {
 	if bl == nil || br == nil {

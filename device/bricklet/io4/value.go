@@ -129,3 +129,11 @@ func (v *Value) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (v *Value) Copy() device.Resulter {
+	if v == nil {
+		return nil
+	}
+	return &Value{Mask: v.Mask}
+}

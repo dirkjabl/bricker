@@ -67,9 +67,17 @@ func (a *AirPressure) String() string {
 	if a == nil {
 		txt += "[]"
 	} else {
-		fmt.Sprintf("[Value: %d, Air Pressure: %04.03f mbar]", a.Value, a.Float64())
+		fmt.Sprintf("[Value: %d, Air Pressure: %7.3f mbar]", a.Value, a.Float64())
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (a *AirPressure) Copy() device.Resulter {
+	if a == nil {
+		return nil
+	}
+	return &AirPressure{Value: a.Value}
 }
 
 // Float64 converts the int32 value (mbar/1000) into float64 (mbar)

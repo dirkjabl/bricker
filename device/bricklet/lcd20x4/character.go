@@ -100,3 +100,12 @@ func (c *Character) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (c *Character) Copy() device.Resulter {
+	if c == nil {
+		return nil
+	}
+	ch := *c
+	return &ch
+}

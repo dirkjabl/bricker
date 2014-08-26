@@ -68,6 +68,14 @@ func (t *Temperature) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (t *Temperature) Copy() device.Resulter {
+	if t == nil {
+		return nil
+	}
+	return &Temperature{Value: t.Value}
+}
+
 // Float64 converts the temperature value to a float.
 func (t *Temperature) Float64() float64 {
 	f := float64(t.Value) / 100.00

@@ -159,6 +159,14 @@ func (e *EdgeCounts) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (e *EdgeCounts) Copy() device.Resulter {
+	if e == nil {
+		return nil
+	}
+	return &EdgeCounts{Value: e.Value}
+}
+
 // EdgeCountConfig type for configurate the edge count.
 type EdgeCountConfig struct {
 	Type     uint8
@@ -197,6 +205,16 @@ func EdgeTypeName(t uint8) string {
 	default:
 		return "Unknown"
 	}
+}
+
+// Copy creates a copy of the content.
+func (ecc *EdgeCountConfig) Copy() device.Resulter {
+	if ecc == nil {
+		return nil
+	}
+	return &EdgeCountConfig{
+		Type:     ecc.Type,
+		Debounce: ecc.Debounce}
 }
 
 // EdgeCountConfigs type for set a edge count configuration.

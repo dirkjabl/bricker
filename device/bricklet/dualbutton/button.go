@@ -75,3 +75,13 @@ func (bs *ButtonState) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (bs *ButtonState) Copy() device.Resulter {
+	if bs == nil {
+		return nil
+	}
+	return &ButtonState{
+		ButtonLeft:  bs.ButtonLeft,
+		ButtonRight: bs.ButtonRight}
+}

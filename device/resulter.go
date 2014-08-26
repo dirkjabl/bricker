@@ -13,6 +13,7 @@ import (
 type Resulter interface {
 	FromPacket(*packet.Packet) error
 	String() string
+	Copy() Resulter
 }
 
 // CheckForFromPacket tests if a needed parameter is nil and returns an error.
@@ -48,6 +49,11 @@ func (er *EmptyResult) FromPacket(p *packet.Packet) error {
 // String fullfill stringer interface.
 func (er *EmptyResult) String() string {
 	return "EmptyResult []"
+}
+
+// Copy creates new EmptyResult, it needs not to copy.
+func (er *EmptyResult) Copy() Resulter {
+	return &EmptyResult{}
 }
 
 // IsEmptyResultOk checks if an error occur by an empty result
