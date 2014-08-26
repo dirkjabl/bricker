@@ -33,3 +33,11 @@ func (d *Debounce) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (d *Debounce) Copy() Resulter {
+	if d == nil {
+		return nil
+	}
+	return &Debounce{Value: d.Value}
+}

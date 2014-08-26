@@ -106,6 +106,14 @@ func (b *Button) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (b *Button) Copy() device.Resulter {
+	if b == nil {
+		return nil
+	}
+	return &Button{Number: b.Number}
+}
+
 // Pressed is a type for the return of the IsButtonPressed subscriber.
 type Pressed struct {
 	IsPressed bool // is the button pressed
@@ -133,6 +141,14 @@ func (pr *Pressed) String() string {
 		txt += "[nil]"
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (pr *Pressed) Copy() device.Resulter {
+	if pr == nil {
+		return nil
+	}
+	return &Pressed{IsPressed: pr.IsPressed}
 }
 
 // FromPressedRaw converts a PressedRaw type to a Pressed type.

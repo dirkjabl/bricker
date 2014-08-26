@@ -133,3 +133,11 @@ func (r *Range) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (r *Range) Copy() device.Resulter {
+	if r == nil {
+		return nil
+	}
+	return &Range{Value: r.Value}
+}

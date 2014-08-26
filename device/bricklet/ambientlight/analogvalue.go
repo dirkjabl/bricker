@@ -78,3 +78,11 @@ func (av *AnalogValue) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (av *AnalogValue) Copy() device.Resulter {
+	if av == nil {
+		return nil
+	}
+	return &AnalogValue{Value: av.Value}
+}

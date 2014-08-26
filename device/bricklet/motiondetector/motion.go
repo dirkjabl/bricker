@@ -98,3 +98,11 @@ func (m *Motion) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (m *Motion) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Motion{Value: m.Value}
+}

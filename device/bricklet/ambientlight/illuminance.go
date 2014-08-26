@@ -69,6 +69,14 @@ func (i *Illuminance) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (i *Illuminance) Copy() device.Resulter {
+	if i == nil {
+		return nil
+	}
+	return &Illuminance{Value: i.Value}
+}
+
 // Float64 converts the illuminance value from int16 to float64.
 func (i *Illuminance) Float64() float64 {
 	f := float64(i.Value) / 10.00

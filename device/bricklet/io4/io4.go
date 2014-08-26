@@ -75,3 +75,13 @@ func (v *Values) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (v *Values) Copy() device.Resulter {
+	if v == nil {
+		return nil
+	}
+	return &Values{
+		SelectionMask: v.SelectionMask,
+		ValueMask:     v.ValueMask}
+}

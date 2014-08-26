@@ -137,6 +137,16 @@ func (s *State) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (s *State) Copy() device.Resulter {
+	if s == nil {
+		return nil
+	}
+	return &State{
+		Relay1: s.Relay1,
+		Relay2: s.Relay2}
+}
+
 // FromStateRaw converts a StateRaw to a State
 func (s *State) FromStateRaw(sr *StateRaw) {
 	if s == nil || sr == nil {
@@ -194,6 +204,16 @@ func (s *SelectedState) String() string {
 		txt += fmt.Sprintf("[Relay: %d, State: %t]", s.Relay, s.State)
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (s *SelectedState) Copy() device.Resulter {
+	if s == nil {
+		return nil
+	}
+	return &SelectedState{
+		Relay: s.Relay,
+		State: s.State}
 }
 
 // FromSelectedStateRaw converts the contet of a SelectedStateRaw into the object.

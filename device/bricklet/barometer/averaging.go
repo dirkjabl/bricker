@@ -108,3 +108,14 @@ func (a *Average) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (a *Average) Copy() device.Resulter {
+	if a == nil {
+		return nil
+	}
+	return &Average{
+		MovingPressure: a.MovingPressure,
+		Pressure:       a.Pressure,
+		Temperature:    a.Temperature}
+}

@@ -126,3 +126,11 @@ func (m *Mode) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (m *Mode) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Mode{Value: m.Value}
+}

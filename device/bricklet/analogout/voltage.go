@@ -95,3 +95,11 @@ func (v *Voltage) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (v *Voltage) Copy() device.Resulter {
+	if v == nil {
+		return nil
+	}
+	return &Voltage{Value: v.Value}
+}

@@ -168,6 +168,16 @@ func (dtl *DefaultTextLine) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (dtl *DefaultTextLine) Copy() device.Resulter {
+	if dtl == nil {
+		return nil
+	}
+	return &DefaultTextLine{
+		Line: dtl.Line,
+		Text: dtl.Text}
+}
+
 // Line type for the line number of the default text.
 type Line struct {
 	Number uint8
@@ -190,6 +200,14 @@ func (l *Line) String() string {
 		txt += "[nil]"
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (l *Line) Copy() device.Resulter {
+	if l == nil {
+		return nil
+	}
+	return &Line{Number: l.Number}
 }
 
 // Text is the type for a text line (the characters).
@@ -217,6 +235,14 @@ func (t *Text) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (t *Text) Copy() device.Resulter {
+	if t == nil {
+		return nil
+	}
+	return &Text{Text: t.Text}
+}
+
 // Counter is the value type for the default text time out timer.
 type Counter struct {
 	Value int32 // every not negative value starts the timer
@@ -239,4 +265,12 @@ func (c *Counter) String() string {
 		txt += "[nil]"
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (c *Counter) Copy() device.Resulter {
+	if c == nil {
+		return nil
+	}
+	return &Counter{Value: c.Value}
 }

@@ -84,3 +84,11 @@ func (m *Moisture) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (m *Moisture) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Moisture{Value: m.Value}
+}
