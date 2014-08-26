@@ -13,6 +13,7 @@ import (
 type Resulter interface {
 	FromPacket(*packet.Packet) error
 	String() string
+	Copy() Resulter
 }
 
 // CheckForFromPacket tests if a needed parameter is nil and returns an error.
