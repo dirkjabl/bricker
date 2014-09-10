@@ -34,6 +34,11 @@ func TestBytesPayload(t *testing.T) {
 	if bytes.Compare(a, b) != 0 {
 		t.Fatalf("Error TestBytesPayload: get not same byte slices %v != %v. ", a, b)
 	}
+	p = nil
+	b = p.Bytes()
+	if b != nil {
+		t.Fatalf("Error TestBytesPayload: get bytes on an empty payload!? (%s)", p)
+	}
 }
 
 func TestStringPayload(t *testing.T) {
@@ -48,7 +53,13 @@ func TestStringPayload(t *testing.T) {
 	for _, v := range b {
 		c += fmt.Sprintf("0x%02x ", v)
 	}
-	c = "Payload: [ " + c + "]"
+	c = "Payload [ " + c + "]"
+	if s != c {
+		t.Fatalf("Error TestStringPayload: Strings mismatch: %s != %s. ", s, c)
+	}
+	p = nil
+	s = p.String()
+	c = "Payload [nil]"
 	if s != c {
 		t.Fatalf("Error TestStringPayload: Strings mismatch: %s != %s. ", s, c)
 	}

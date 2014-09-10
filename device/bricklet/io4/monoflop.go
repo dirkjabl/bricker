@@ -125,3 +125,14 @@ func (m *Monoflop) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (m *Monoflop) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Monoflop{
+		Value:         m.Value,
+		Time:          m.Time,
+		TimeRemaining: m.TimeRemaining}
+}

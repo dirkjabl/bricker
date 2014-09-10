@@ -191,6 +191,14 @@ func (t *TiltState) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (t *TiltState) Copy() device.Resulter {
+	if t == nil {
+		return nil
+	}
+	return &TiltState{Value: t.Value}
+}
+
 // Enabled is a type for showing if the TiltStateChanged callback is enabled or disabled.
 type Enabled struct {
 	Value bool // true - enabled, false - disabled
@@ -218,6 +226,14 @@ func (e *Enabled) String() string {
 		txt += fmt.Sprintf("[Value: %t]", e.Value)
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (e *Enabled) Copy() device.Resulter {
+	if e == nil {
+		return nil
+	}
+	return &Enabled{Value: e.Value}
 }
 
 // FromEnabledRaw converts the EnabledRaw into a Enabled.

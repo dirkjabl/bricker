@@ -104,8 +104,8 @@ func NewConfigurationRaw(c *Configuration) *ConfigurationRaw {
 
 // Configurations is the return type for the state of the pins.
 type Configurations struct {
-	DirectionMaske uint8
-	ValueMask      uint8
+	DirectionMask uint8
+	ValueMask     uint8
 }
 
 // FromPacket creates a Configurations from a packet.
@@ -123,8 +123,18 @@ func (c *Configurations) String() string {
 		txt += "[nil]"
 	} else {
 		txt += fmt.Sprintf("[Direction Mask: %d (%s), Value Mask: %d (%s)]",
-			c.DirectionMaske, misc.MaskToString(c.DirectionMaske, 4, true),
+			c.DirectionMask, misc.MaskToString(c.DirectionMask, 4, true),
 			c.ValueMask, misc.MaskToString(c.ValueMask, 4, true))
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (c *Configurations) Copy() device.Resulter {
+	if c == nil {
+		return nil
+	}
+	return &Configurations{
+		DirectionMask: c.DirectionMask,
+		ValueMask:     c.ValueMask}
 }

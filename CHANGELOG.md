@@ -1,5 +1,9 @@
 # Changelog
 
+### prealpha.6
+
+Some fixes and an interface change.
+
 ### prealpha.5
 
 More bricklets supported (Barometer, Moisture, Motion Detector).

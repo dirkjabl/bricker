@@ -150,6 +150,16 @@ func (ls *LedState) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (ls *LedState) Copy() device.Resulter {
+	if ls == nil {
+		return nil
+	}
+	return &LedState{
+		LedLeft:  ls.LedLeft,
+		LedRight: ls.LedRight}
+}
+
 // SelectedLedState is a type for select a led and set the state.
 type SelectedLedState struct {
 	Led   uint8 // led 0 (left) or 1 (right)
@@ -185,4 +195,16 @@ func (s *States) String() string {
 			LedStateName(s.LedRight), s.LedRight)
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (s *States) Copy() device.Resulter {
+	if s == nil {
+		return nil
+	}
+	return &States{
+		ButtonLeft:  s.ButtonLeft,
+		ButtonRight: s.ButtonRight,
+		LedLeft:     s.LedLeft,
+		LedRight:    s.LedRight}
 }

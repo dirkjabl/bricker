@@ -129,6 +129,17 @@ func (m *Monoflop) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (m *Monoflop) Copy() device.Resulter {
+	if m == nil {
+		return nil
+	}
+	return &Monoflop{
+		Value:         m.Value,
+		Time:          m.Time,
+		TimeRemaining: m.TimeRemaining}
+}
+
 // PortPin is a type to select port and pin.
 type PortPin struct {
 	Port byte  // Port 'a' or 'b'

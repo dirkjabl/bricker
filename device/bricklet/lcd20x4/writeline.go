@@ -58,3 +58,14 @@ func (ltl *LcdTextLine) FromPacket(p *packet.Packet) error {
 func (ltl *LcdTextLine) String() string {
 	return fmt.Sprintf("LCD 20x4 Text Line [Line: %d Position: %d Text: %s]", ltl.Line, ltl.Pos, ltl.Text)
 }
+
+// Copy creates a copy of the content.
+func (ltl *LcdTextLine) Copy() device.Resulter {
+	if ltl == nil {
+		return nil
+	}
+	return &LcdTextLine{
+		Line: ltl.Line,
+		Pos:  ltl.Pos,
+		Text: ltl.Text}
+}

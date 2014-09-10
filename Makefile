@@ -50,6 +50,7 @@ DIRS=\
 
 test.dirs: $(addsuffix .test, $(DIRS))
 deeptest.dirs: $(addsuffix .deeptest, $(DIRS))
+cover.dirs: $(addsuffix .cover, $(DIRS))
 clean.dirs: $(addsuffix .clean, $(DIRS))
 build.dirs: $(addsuffix .build, $(DIRS))
 install.dirs: $(addsuffix .build, $(DIRS))
@@ -74,6 +75,10 @@ install.dirs: $(addsuffix .build, $(DIRS))
 	+@echo build $*
 	+@cd $*; $(GO) build ; cd $(SRCDIR)
 
+%.cover:
+	+@echo test $*
+	+@cd $*; $(GO) test -v -cover ; cd $(SRCDIR)
+
 build: build.dirs
 
 clean: clean.dirs
@@ -83,6 +88,8 @@ install: install.dirs
 test: test.dirs
 
 deeptest: deeptest.dirs
+
+cover: cover.dirs
 
 echo-dirs:
 	@echo $(DIRS)

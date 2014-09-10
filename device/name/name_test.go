@@ -16,4 +16,7 @@ func TestName(t *testing.T) {
 			t.Fatalf("Error TestName: different names (%s != %s).", realname, name)
 		}
 	}
+	if Name(666) != "unknown hardware" {
+		t.Fatalf("Error TestName: not unknown (%s).", Name(666))
+	}
 }

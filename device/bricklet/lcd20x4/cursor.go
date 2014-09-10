@@ -98,6 +98,16 @@ func (c *Cursor) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (c *Cursor) Copy() device.Resulter {
+	if c == nil {
+		return nil
+	}
+	return &Cursor{
+		Show:     c.Show,
+		Blinking: c.Blinking}
+}
+
 // FromCursorRaw converts a CursorRaw type into a Cursor type.
 func (c *Cursor) FromCursorRaw(cr *CursorRaw) {
 	if c == nil || cr == nil {

@@ -54,13 +54,13 @@ func New() *Bricker {
 
 // Done release all connections and subscriber and release all resources.
 func (b *Bricker) Done() {
-	// release all subscriber
+	// Unsubscribe all subscriber.
 	for _, subs := range b.subscriber {
 		for _, s := range subs {
 			b.Unsubscribe(s)
 		}
 	}
-	// Stop all bricker
+	// Release all connections.
 	for name, _ := range b.connection {
 		b.Release(name)
 	}

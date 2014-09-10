@@ -85,3 +85,13 @@ func (e *Enumeration) String() string {
 	}
 	return txt
 }
+
+// Copy does copy the values to a new enumeration.
+func (e *Enumeration) Copy() device.Resulter {
+	if e == nil {
+		return nil
+	}
+	return &Enumeration{
+		Identity:        e.Identity,
+		EnumerationType: e.EnumerationType}
+}

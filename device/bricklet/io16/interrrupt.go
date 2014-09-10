@@ -122,6 +122,14 @@ func (i *Interrupt) String() string {
 	return txt
 }
 
+// Copy creates a copy of the content.
+func (i *Interrupt) Copy() device.Resulter {
+	if i == nil {
+		return nil
+	}
+	return &Interrupt{Mask: i.Mask}
+}
+
 // Interrupts is the result type of the interrupt callback.
 type Interrupts struct {
 	Port          byte  // port a or b
@@ -149,4 +157,15 @@ func (i *Interrupts) String() string {
 			i.ValueMask, misc.MaskToString(i.ValueMask, 8, false))
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (i *Interrupts) Copy() device.Resulter {
+	if i == nil {
+		return nil
+	}
+	return &Interrupts{
+		Port:          i.Port,
+		InterruptMask: i.InterruptMask,
+		ValueMask:     i.ValueMask}
 }

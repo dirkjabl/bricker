@@ -88,9 +88,17 @@ func (h *Humidity) String() string {
 	if h == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("[Value: %d, Humidity: %03.02f %RH]", h.Value, h.Float64())
+		txt += fmt.Sprintf("[Value: %d, Humidity: %5.1f %%RH]", h.Value, h.Float64())
 	}
 	return txt
+}
+
+// Copy creates a copy of the content.
+func (h *Humidity) Copy() device.Resulter {
+	if h == nil {
+		return nil
+	}
+	return &Humidity{Value: h.Value}
 }
 
 // Float64 converts the humidity value from int16 to float64.

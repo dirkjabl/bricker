@@ -28,7 +28,38 @@ For the actual supportet bricks and bricklets please refer the HARDWARE.md file.
 
 ## Examples
 
-Come later, sorry...
+You could find examples in the [examples repository](https://github.com/dirkjabl/examples/tree/master/bricker).
+
+The typical structure for an application with the bricker starts with the
+creation of a bricker object
+
+    brick := bricker.New()
+    defer brick.Done() 
+
+Now you should add one or more connectors.
+This connectors are the connections to a real hardware stack.
+It could be a USB connection (with brickd), a WLAN or Ethernet master extension.
+All this connectors work over TCP/IP.
+
+    // USB connection, localhost, default port (needs a running brickd!)
+    conn, err := buffered.NewUnbuffered("localhost:4223")
+    if err != nil {
+      fmt.Printf("No connection: %s\n", err.Error())
+      return
+    }
+    defer conn.Done()
+
+Attach the connection to the bricker with a name.
+
+    err = brick.Attach(conn, "local")
+	if err != nil {
+      fmt.Printf("Could not attach connection to bricker: %s\n", err.Error())
+      return
+    }
+    defer brick.Release("local") 
+
+Now you could add subscriber to the bricker.
+Depends on with bricklets you have.
 
 ## Makefile
 

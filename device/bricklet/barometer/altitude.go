@@ -73,3 +73,11 @@ func (a *Altitude) String() string {
 	}
 	return txt
 }
+
+// Copy creates a copy of the content.
+func (a *Altitude) Copy() device.Resulter {
+	if a == nil {
+		return nil
+	}
+	return &Altitude{Value: a.Value}
+}
