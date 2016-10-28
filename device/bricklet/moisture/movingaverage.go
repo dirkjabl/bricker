@@ -100,7 +100,7 @@ func (a *Average) String() string {
 	if a == nil {
 		txt += "[nil]"
 	} else {
-		txt += fmt.Sprintf("Value: %d", a.Value)
+		txt += fmt.Sprintf("[Value: %d]", a.Value)
 	}
 	return txt
 }
