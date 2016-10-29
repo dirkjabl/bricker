@@ -7,8 +7,8 @@
 package virtual
 
 import (
+	"github.com/dirkjabl/bricker/connector"
 	"github.com/dirkjabl/bricker/event"
-	"github.com/dirkjabl/bricker/util/generator"
 	"github.com/dirkjabl/bricker/util/hash"
 )
 
@@ -27,17 +27,16 @@ type Virtual struct {
 	receive   chan *event.Event
 	generator map[hash.Hash]GeneratorFunc
 	fallback  GeneratorFunc
-	serial    *generator.Generator
+	serial    *connector.Sequence
 }
 
 // New creates a new virtual connector.
 func New() *Virtual {
 	v := &Virtual{
 		receive:   make(chan *event.Event, 20),
-		serial:    generator.New(),
+		serial:    new(connector.Sequence),
 		generator: make(map[hash.Hash]GeneratorFunc)}
 	v.DetachFallbackGenerator()
-	_ = v.serial.Get() // pull zero
 	return v
 }
 
@@ -71,7 +70,7 @@ func (v *Virtual) Send(e *event.Event) {
 		return
 	}
 	if e.Packet != nil {
-		e.Packet.Head.SetSequence(v.serial.Get8())
+		e.Packet.Head.SetSequence(v.serial.GetSequence())
 		e.Packet.Head.Length = e.Packet.ComputeLength()
 	}
 	f := v.getGen(e)

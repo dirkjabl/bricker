@@ -13,6 +13,7 @@ The Connector is a producer of events. To use this events their will be need con
 package connector
 
 import (
+	"fmt"
 	"github.com/dirkjabl/bricker/event"
 )
 
@@ -24,4 +25,25 @@ type Connector interface {
 	Send(*event.Event)
 	Receive() *event.Event
 	Done()
+}
+
+// Sequence is a type for sequence in the header.
+// It has to be between 1 and 15 and every connector should use it.
+// It increase the sequence automaticly at call.
+type Sequence struct {
+	value uint8
+}
+
+// GetSequence give back the new sequence number.
+func (s *Sequence) GetSequence() uint8 {
+	s.value++
+	if s.value > 15 {
+		s.value = 1
+	}
+	return s.value
+}
+
+// String to fullfill Stringer interface
+func (s *Sequence) String() string {
+	return fmt.Sprintf("Sequence: [%d]", s.value)
 }
