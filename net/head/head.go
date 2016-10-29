@@ -40,7 +40,11 @@ func (h *Head) Sequence() uint8 {
 }
 
 // SetSequence sets a new sequence to the header.
+// The sequence has to be between 1 and 15.
 func (h *Head) SetSequence(seq uint8) {
+	if seq < 1 || seq > 15 {
+		panic(fmt.Sprintf("Sequence (%d) is out of range (1-15)", seq))
+	}
 	h.SequenceAndOptions |= (seq << 4) & 0xf0
 }
 

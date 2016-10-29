@@ -7,6 +7,7 @@
 package buffered
 
 import (
+	"github.com/dirkjabl/bricker/connector"
 	"github.com/dirkjabl/bricker/event"
 	"github.com/dirkjabl/bricker/net"
 	"github.com/dirkjabl/bricker/net/packet"
@@ -19,11 +20,11 @@ import (
 // The connector waits for packets to write out to the hardware on the Out channel.
 // A close on the Quit channel let the bricker stops all go routines and disconnect to the hardware.
 type ConnectorBuffered struct {
-	conn *net.Net          // internal, the real connection
-	seq  uint8             // internal, actual sequence number
-	In   chan *event.Event // input channel, here the bricker put in the readed packets as events
-	Out  chan *event.Event // output channel, here the bricker read out the events, which should be send
-	Quit chan struct{}     // quit channel, if closed, the bricker stop working and release resources
+	conn *net.Net            // internal, the real connection
+	seq  *connector.Sequence // internal, actual sequence number
+	In   chan *event.Event   // input channel, here the bricker put in the readed packets as events
+	Out  chan *event.Event   // output channel, here the bricker read out the events, which should be send
+	Quit chan struct{}       // quit channel, if closed, the bricker stop working and release resources
 }
 
 // New creates the connector object with a connection to the given address (addr).
@@ -34,7 +35,7 @@ func New(addr string, inbuf, outbuf int) (*ConnectorBuffered, error) {
 		return nil, err
 	}
 	cb := &ConnectorBuffered{conn: conn,
-		seq:  0,
+		seq:  new(connector.Sequence),
 		In:   make(chan *event.Event, inbuf),
 		Out:  make(chan *event.Event, outbuf),
 		Quit: make(chan struct{})}
@@ -104,8 +105,7 @@ func (cb *ConnectorBuffered) write() {
 		select {
 		case ev = <-cb.Out:
 			if ev != nil && ev.Err == nil && ev.Packet != nil {
-				cb.seq++
-				ev.Packet.Head.SetSequence(cb.seq)
+				ev.Packet.Head.SetSequence(cb.seq.GetSequence())
 				ev.Packet.Head.Length = ev.Packet.ComputeLength()
 				cb.conn.WritePacket(ev.Packet)
 			}

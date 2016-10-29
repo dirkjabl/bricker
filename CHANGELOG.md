@@ -1,5 +1,9 @@
 # Changelog
 
+### prealpha.7
+
+Some fixes for the sequence handling.
+
 ### prealpha.6
 
 Some fixes and an interface change.

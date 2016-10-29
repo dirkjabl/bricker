@@ -6,6 +6,7 @@
 package simple
 
 import (
+	"github.com/dirkjabl/bricker/connector"
 	"github.com/dirkjabl/bricker/event"
 	"github.com/dirkjabl/bricker/net"
 	"sync"
@@ -14,7 +15,7 @@ import (
 // The simple connector type.
 type ConnectorSimple struct {
 	conn  *net.Net
-	seq   uint8
+	seq   *connector.Sequence
 	rlock *sync.Mutex
 	wlock *sync.Mutex
 }
@@ -29,7 +30,7 @@ func New(addr string) (*ConnectorSimple, error) {
 		conn:  conn,
 		rlock: new(sync.Mutex),
 		wlock: new(sync.Mutex),
-		seq:   0}
+		seq:   new(connector.Sequence)}
 	return cs, nil
 }
 
@@ -40,8 +41,7 @@ func (cs *ConnectorSimple) Send(ev *event.Event) {
 	}
 	cs.wlock.Lock()
 	defer cs.wlock.Unlock()
-	cs.seq++
-	ev.Packet.Head.SetSequence(cs.seq)
+	ev.Packet.Head.SetSequence(cs.seq.GetSequence())
 	ev.Packet.Head.Length = ev.Packet.ComputeLength()
 	cs.conn.WritePacket(ev.Packet)
 }
