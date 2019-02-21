@@ -1,6 +1,10 @@
 bricker
 =======
 
+** Important: There is know a offical API from Tinkerforge.
+Please use this API. Thanks!
+https://www.tinkerforge.com/de/doc/Software/API_Bindings_Go.html
+
 **bricker is an Go API for the Tinkerforge Hardware.**
 
 *This is not a offical API.*
